@@ -8,25 +8,10 @@ type bindings struct {
 	bound map[V]X
 }
 
-// Bindings represents bindings (or "substitutions"):
-// any logic variable may be bound to some symbolic expression
-// representing its current value.
-type Bindings struct {
-	bindings
-	count int // used to create anonymus variables during reify
-}
-
 // new creates fresh and empty bindings with a ready-to-use bound-map and returns a pointer.
 func new() *bindings {
 	return &bindings{
 		bound: make(map[V]X),
-	}
-}
-
-// New creates fresh and empty Bindings and returns a pointer.
-func New() *Bindings {
-	return &Bindings{
-		bindings: bindings{bound: make(map[V]X)},
 	}
 }
 
@@ -39,18 +24,10 @@ func (b *bindings) clone() *bindings {
 	return clone
 }
 
-// Clone provides a clone of b.
-func (b *Bindings) Clone() *Bindings {
-	cb := b.clone()
-	clone := New()
-	clone.bindings = *cb
-	return clone
-}
-
-// bind binds x to v, so v is bound to x.
+// Bind binds x to v, so v is bound to x.
 // Thus, (v . x) resembles a substitution pair.
 // Note: Bind does not avoid circular bindings.
-func (b *bindings) bind(v V, x X) *bindings {
+func (b *bindings) Bind(v V, x X) *bindings {
 	b.bound[v] = x
 	return b
 }
@@ -71,42 +48,44 @@ func (b *bindings) IsBound(v V) (isBound bool) {
 	return
 }
 
-// Subs return the expression to which v is bound, if any.
+// Subs returns the expression to which v is bound, if any.
+//
+// This expression shall substitute the variable,
+// which shall thus become substituted by its value.
 func (b *bindings) Subs(v V) (x X, hasSubs bool) {
 	x, hasSubs = b.bound[v]
 	return
 }
 
-// walk ...
+// walkV ...
 func (b *bindings) walkV(v V) X {
-	x, ok := b.Subs(v)
-	if !ok {
+	xx, found := b.Subs(v)
+	if !found {
 		return v.Expr()
 	}
-	if !x.IsVariable() {
-		return x
+	vx, isXxVariable := xx.AsVariable()
+	if !isXxVariable {
+		return xx
 	}
-	return b.walkV(x.Atom.Var)
+	return b.walkV(vx)
 }
 
-// walkX - not used
+// walkX ...
 func (b *bindings) walkX(x X) X {
-	if !x.IsVariable() {
+	vx, isXxVariable := x.AsVariable()
+	if !isXxVariable {
 		return x
-	} 
-	xx, found := b.Subs(x.Atom.Var)
+	}
+	xx, found := b.Subs(vx)
 	if !found {
 		return x
 	}
 	return b.walkX(xx)
 }
 
-// Walk ...
+// Walk ... some call it `walkstar` or `walk*`
 func (b *bindings) Walk(x X) X {
-	xx := x
-	if x.IsVariable() {
-		xx = b.walkV(x.Atom.Var)
-	}
+	xx := b.walkX(x)
 	if xx.IsVariable() {
 		return xx
 	}
@@ -119,14 +98,12 @@ func (b *bindings) Walk(x X) X {
 	return xx
 }
 
-// occurs reports whether v occurs in x.
+// Occurs reports whether v occurs in x.
 func (b *bindings) Occurs(v V, x X) bool {
-	xx := x
-	if x.IsVariable() {
-		xx = b.walkV(x.Atom.Var)
-	}
-	if xx.IsVariable() {
-		return xx.Atom.Var.Equal(v)
+	xx := b.walkX(x)
+	u, isVariable := xx.AsVariable()
+	if isVariable {
+		return u.Equal(v)
 	}
 	if xx.IsPair() {
 		return b.Occurs(v, xx.Car()) || b.Occurs(v, xx.Cdr())
@@ -141,7 +118,7 @@ func (b *bindings) exts(v V, x X) bool {
 	if b.Occurs(v, x) {
 		return false
 	}
-	b.bind(v, x)
+	b.Bind(v, x)
 	// append([]*Substitution{&Substitution{Var: v.Name, Value: x}}, s...), true
 	return true
 
@@ -151,23 +128,26 @@ func (b *bindings) exts(v V, x X) bool {
 // where cycles in substitutions can lead to (ok = false)
 func (b *bindings) Unify(x, y X) bool {
 	xx := x
-	if x.IsVariable() {
-		xx = b.walkV(x.Atom.Var)
-	}
-	yy := y
-	if y.IsVariable() {
-		yy = b.walkV(y.Atom.Var)
+	vx, isXxVariable := x.AsVariable()
+	if isXxVariable {
+		xx = b.walkV(vx)
 	}
 
-	if xx.IsVariable() && yy.IsVariable() && xx.Atom.Var.Equal(xx.Atom.Var) {
+	yy := y
+	vy, isYyVariable := y.AsVariable()
+	if isYyVariable {
+		yy = b.walkV(vy)
+	}
+
+	if isXxVariable && isYyVariable && vx.Equal(vy) {
 		return true
 	}
 
-	if xx.IsVariable() {
-		return b.exts(xx.Atom.Var, yy)
+	if isXxVariable {
+		return b.exts(vx, yy)
 	}
-	if yy.IsVariable() {
-		return b.exts(yy.Atom.Var, xx)
+	if isYyVariable {
+		return b.exts(vy, xx)
 	}
 
 	if xx.IsPair() && yy.IsPair() {
@@ -181,18 +161,4 @@ func (b *bindings) Unify(x, y X) bool {
 		return true
 	}
 	return false
-}
-
-// Reify ...
-func (b *Bindings) Reify(x X) *Bindings {
-	xx := x
-	if x.IsVariable() {
-		xx = b.walkV(x.Atom.Var)
-	}
-	if xx.IsVariable() {
-		b.bind(xx.Atom.Var, b.newV())
-	} else if xx.IsPair() {
-		b.Reify(xx.Car()).Reify(xx.Cdr())
-	}
-	return b
 }

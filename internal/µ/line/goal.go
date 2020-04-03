@@ -1,52 +1,18 @@
 package micro
 
-import (
-	"strconv"
+// import "strconv"
 
-	"github.com/awalterschulze/gominikanren/sexpr/ast"
-)
+type State struct{}
 
-/*
-// State is a product of a list of substitutions and a variable counter.
-type State struct {
-	Substitutions
-	Counter int
-}
-
-// String returns a string representation of State.
-func (s *State) String() string {
-	if s.Substitutions == nil {
-		return "(" + "()" + " . " + strconv.Itoa(s.Counter) + ")"
-	}
-	return "(" + s.Substitutions.String() + " . " + strconv.Itoa(s.Counter) + ")"
-}
-*/
-
-// EmptyState returns an empty state.
 func EmptyState() *State {
 	return &State{}
 }
 
-// Substitutions is a list of substitutions represented by a sexprs pair.
-type Substitutions []*Substitution
-
-func (s Substitutions) String() string {
-	ss := deriveFmapSs(func(s *Substitution) *ast.SExpr {
-		return ast.Cons(&ast.SExpr{Atom: &ast.Atom{Var: &ast.Variable{Name: s.Var}}}, s.Value)
-	}, []*Substitution(s))
-	l := ast.NewList(ss...).String()
-	return l[1 : len(l)-1]
+func (State) Unify(x, y X) (xUy X, ok bool) {
+	return
 }
 
-// Substitution represents a variable and a value.
-type Substitution struct {
-	Var   string
-	Value *ast.SExpr
-}
-
-func (s Substitution) String() string {
-	return ast.Cons(&ast.SExpr{Atom: &ast.Atom{Var: &ast.Variable{Name: s.Var}}}, s.Value).String()
-}
+// end of fakes
 
 // Goal is a function that takes a state and returns a stream of states.
 type Goal func(*State) StreamOfStates
@@ -94,11 +60,12 @@ scheme code:
 		)
 	)
 */
-func EqualO(u, v *ast.SExpr) Goal {
+func EqualO(u, v X) Goal {
 	return func(s *State) StreamOfStates {
-		ss, sok := s.Substitutions.unify(u, v)
+		ss, sok := s.Unify(u, v)
 		if sok {
-			return NewSingletonStream(&State{Substitutions: ss, Counter: s.Counter})
+			s, _ := &State{}, ss // TODO: &State{Substitutions: ss, Counter: s.Counter}
+			return NewSingletonStream(s)
 		}
 		return nil
 	}

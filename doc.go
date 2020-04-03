@@ -13,31 +13,19 @@ type Variable = sexpr.Variable
 //type Symbol = ast.Symbol
 type Atom = sexpr.Atom
 
-func Parse(s string) (*Expression, error) {
-	return sexpr.Parse(s)
-}
+var (
+	Parse = sexpr.Parse
 
-// in Test-Programmen will/man oft speziell erzeugen:
+	Cons = sexpr.Cons
 
-func NewSymbol(s string) *Expression {
-	return sexpr.NewSymbol(s)
-}
+	NewString   = sexpr.NewString
+	NewSymbol   = sexpr.NewSymbol
+	NewInt      = sexpr.NewInt
+	NewFloat    = sexpr.NewFloat
+	NewVariable = sexpr.NewVariable
 
-func NewVariable(s string) *Expression {
-	return sexpr.NewVariable(s)
-}
-
-func NewList(ss ...*Expression) *Expression {
-	return sexpr.NewList(ss...)
-}
-
-/*
-
-   func Cons(car *SExpr, cdr *SExpr) *SExpr
-   func NewFloat(f float64) *Expression
-   func NewInt(i int64) *Expression
-   func NewString(s string) *Expression
-*/
+	NewList = sexpr.NewList
+)
 
 // ============================================================================
 

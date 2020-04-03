@@ -15,7 +15,7 @@ func (stream StreamOfStates) String() string {
 	for stream != nil {
 		s, stream = stream()
 		_ = s
-// TODO		buf = append(buf, s.String())
+		// TODO		buf = append(buf, s.String())
 	}
 	return "(" + strings.Join(buf, " ") + ")"
 }

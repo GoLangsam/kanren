@@ -75,7 +75,7 @@ func (b *Bindings) IsBound(v V) (isBound bool)
     IsBound reports whether v is bound or not
 
 func (b *Bindings) Occurs(v V, x X) bool
-    occurs reports whether v occurs in x.
+    Occurs reports whether v occurs in x.
 
 func (b *Bindings) Reify(x X) *Bindings
     Reify ...
@@ -88,7 +88,7 @@ func (b *Bindings) Unify(x, y X) bool
     more associations, where cycles in substitutions can lead to (ok = false)
 
 func (b *Bindings) Walk(x X) X
-    Walk ...
+    Walk ... some call it `walkstar` or `walk*`
 
 type V = *sexpr.Variable
 

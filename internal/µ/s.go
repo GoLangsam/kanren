@@ -1,12 +1,13 @@
-package kanren
+package µ
 
 import "github.com/GoLangsam/kanren/internal/µ/bind"
+import "github.com/GoLangsam/kanren/internal/µ/vari"
 
 type Constraints struct{}
 
 // S represents a State: Variables, Bindings, Constraints
 type S struct {
-	pool // known variables
+	vari.Able // known variables
 	*bind.Bindings
 	Constraints
 }
@@ -14,7 +15,7 @@ type S struct {
 // Init provides an empty state
 func Init() *S {
 	return &S{
-		newPool(),
+		vari.Ables(),
 		bind.New(),
 		Constraints{},
 	}

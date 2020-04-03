@@ -1,9 +1,5 @@
 package µ
 
-import "github.com/GoLangsam/kanren/internal/µ/core"
-
-type S = kanren.S
-
 type head = S
 type tail func() *Stream
 
