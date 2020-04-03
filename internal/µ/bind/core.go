@@ -23,12 +23,6 @@ var NewSymbol = sexpr.NewSymbol
 // TODO: (b *Bind) String() string
 // see subs.go; we do not need FMapSs, but we shall import ast
 
-// vAsX returns a singleton expression composed only of v
-// vAsX is a helper used by walk
-func vAsX(v V) X {
-	return &sexpr.Expression{Atom: &sexpr.Atom{Var: v}}
-}
-
 // newV provides an expression with nothings but a new anonymous variable.
 // newV is a helper for b.Reify.
 func (b *Bindings) newV() X {
