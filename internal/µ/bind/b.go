@@ -81,7 +81,7 @@ func (b *bindings) Subs(v V) (x X, hasSubs bool) {
 func (b *bindings) walkV(v V) X {
 	x, ok := b.Subs(v)
 	if !ok {
-		return vAsX(v)
+		return v.Expr()
 	}
 	if !x.IsVariable() {
 		return x
@@ -91,7 +91,7 @@ func (b *bindings) walkV(v V) X {
 
 // walkX - not used
 func (b *bindings) walkX(x X) X {
-	if x.IsVariable() {
+	if !x.IsVariable() {
 		return x
 	} 
 	xx, found := b.Subs(x.Atom.Var)
