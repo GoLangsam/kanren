@@ -3,14 +3,14 @@ echo // go doc put to good use	 >doc.md
 echo.				>>doc.md
 echo ------------------------------------------------------------------------------->>doc.md
 
-echo ## go doc . Bind		>>doc.md
-        go doc . Bind		>>doc.md
+echo ## go doc .   Bindings		>>doc.md
+        go doc .   Bindings		>>doc.md
 
 echo.				>>doc.md
 echo ------------------------------------------------------------------------------->>doc.md
 
-echo ## go doc -u Bind		>>doc.md
-        go doc -u Bind		>>doc.md
+echo ## go doc -u Bindings		>>doc.md
+        go doc -u Bindings		>>doc.md
 
 echo.				>>doc.md
 echo ------------------------------------------------------------------------------->>doc.md

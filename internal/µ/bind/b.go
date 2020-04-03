@@ -1,5 +1,7 @@
 package bind
 
+// TODO: does exts need to clone?
+
 // bindings implements the essence.
 // Bindings extends bindings with Reifiy, which needs to know how to create anonymous variables.
 type bindings struct {
@@ -76,7 +78,7 @@ func (b *bindings) Subs(v V) (x X, hasSubs bool) {
 }
 
 // walk ...
-func (b *bindings) walk(v V) X {
+func (b *bindings) walkV(v V) X {
 	x, ok := b.Subs(v)
 	if !ok {
 		return vAsX(v)
@@ -84,14 +86,26 @@ func (b *bindings) walk(v V) X {
 	if !x.IsVariable() {
 		return x
 	}
-	return b.walk(x.Atom.Var)
+	return b.walkV(x.Atom.Var)
+}
+
+// walkX - not used
+func (b *bindings) walkX(x X) X {
+	if x.IsVariable() {
+		return x
+	} 
+	xx, found := b.Subs(x.Atom.Var)
+	if !found {
+		return x
+	}
+	return b.walkX(xx)
 }
 
 // Walk ...
 func (b *bindings) Walk(x X) X {
 	xx := x
 	if x.IsVariable() {
-		xx = b.walk(x.Atom.Var)
+		xx = b.walkV(x.Atom.Var)
 	}
 	if xx.IsVariable() {
 		return xx
@@ -109,7 +123,7 @@ func (b *bindings) Walk(x X) X {
 func (b *bindings) Occurs(v V, x X) bool {
 	xx := x
 	if x.IsVariable() {
-		xx = b.walk(x.Atom.Var)
+		xx = b.walkV(x.Atom.Var)
 	}
 	if xx.IsVariable() {
 		return xx.Atom.Var.Equal(v)
@@ -138,11 +152,11 @@ func (b *bindings) exts(v V, x X) bool {
 func (b *bindings) Unify(x, y X) bool {
 	xx := x
 	if x.IsVariable() {
-		xx = b.walk(x.Atom.Var)
+		xx = b.walkV(x.Atom.Var)
 	}
 	yy := y
 	if y.IsVariable() {
-		yy = b.walk(y.Atom.Var)
+		yy = b.walkV(y.Atom.Var)
 	}
 
 	if xx.IsVariable() && yy.IsVariable() && xx.Atom.Var.Equal(xx.Atom.Var) {
@@ -173,7 +187,7 @@ func (b *bindings) Unify(x, y X) bool {
 func (b *Bindings) Reify(x X) *Bindings {
 	xx := x
 	if x.IsVariable() {
-		xx = b.walk(x.Atom.Var)
+		xx = b.walkV(x.Atom.Var)
 	}
 	if xx.IsVariable() {
 		b.bind(xx.Atom.Var, b.newV())
