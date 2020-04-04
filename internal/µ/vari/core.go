@@ -9,5 +9,5 @@ type V = *sexpr.Variable
 type X = *sexpr.Expression
 
 var (
-	NewVariable = sexpr.NewVariable
+	newVar = sexpr.NewVariable // used by p.Fresh
 )

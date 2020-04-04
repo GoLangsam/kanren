@@ -8,7 +8,7 @@ type Constraints struct{}
 // S represents a State: Variables, Bindings, Constraints
 type S struct {
 	vari.Able // known variables
-	*bind.Bindings
+	*bind.Ings
 	Constraints
 }
 

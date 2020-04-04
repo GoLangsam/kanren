@@ -90,7 +90,7 @@ func (b *bindings) Walk(x X) X {
 		return xx
 	}
 	if xx.IsPair() {
-		return Cons(
+		return cons(
 			b.Walk(xx.Pair.Car),
 			b.Walk(xx.Pair.Cdr),
 		)

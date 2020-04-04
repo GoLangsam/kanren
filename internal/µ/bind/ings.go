@@ -1,34 +1,37 @@
 package bind
 
-// Bindings represents bindings (or "substitutions"):
+// Ings represents bindings (or "substitutions"):
 // any logic variable may be bound to some symbolic expression
 // representing its current value.
-type Bindings struct {
+//
+// Use as `bind.Ings` (pun intended).
+//
+// The zero value is not useful - initialize with `bind.New()`.
+type Ings struct {
 	bindings
 	count int // used to create anonymus variables during reify
 }
 
-// New creates fresh and empty Bindings and returns a pointer.
-func New() *Bindings {
-	return &Bindings{
+// New creates fresh and empty mapping of/for bind.Ings and returns a pointer.
+func New() *Ings {
+	return &Ings{
 		bindings: bindings{bound: make(map[V]X)},
 	}
 }
 
 // Clone provides a clone of b.
-func (b *Bindings) Clone() *Bindings {
-	cb := b.clone()
+func (b *Ings) Clone() *Ings {
 	clone := New()
-	clone.bindings = *cb
+	clone.bindings = *(b.clone())
 	return clone
 }
 
 // Reify ...
-func (b *Bindings) Reify(x X) *Bindings {
+func (b *Ings) Reify(x X) *Ings {
 	xx := b.walkX(x)
 	u, isVariable := xx.AsVariable()
-	if isVariable {
-		b.Bind(u, b.newV())
+	if isVariable { // bind u(=xx) to new fresh var
+		b.Bind(u, newVar(b.nextName()))
 	} else if xx.IsPair() {
 		b.Reify(xx.Car()).Reify(xx.Cdr())
 	}

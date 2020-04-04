@@ -1,17 +1,13 @@
 package micro
 
-import (
-	"github.com/GoLangsam/sexpr"
-)
+import "github.com/GoLangsam/sexpr"
 
-// from SExpr
-
+// V represents a logic variable
 type V = *sexpr.Variable
+
+// X represents a symbolic expression
 type X = *sexpr.Expression
 
-//pe Atom = sexpr.Atom
-//pe Pair = sexpr.Pair
-
 var (
-	Parse = sexpr.Parse
+	newVar = sexpr.NewVariable
 )
