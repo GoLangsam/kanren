@@ -5,6 +5,10 @@ import "github.com/GoLangsam/kanren/internal/µ/vari"
 
 type Constraints struct{}
 
+// TODO:
+// vari.Able pool implements Fresh & V();
+// bind.Ings implements newName and uses x := NewVariable, thus producing a X directly
+
 // S represents a State: Variables, Bindings, Constraints
 type S struct {
 	vari.Able // known variables

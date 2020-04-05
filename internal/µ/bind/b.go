@@ -121,7 +121,6 @@ func (b *bindings) exts(v V, x X) bool {
 	b.Bind(v, x)
 	// append([]*Substitution{&Substitution{Var: v.Name, Value: x}}, s...), true
 	return true
-
 }
 
 // Unify returns either (ok = false) or the substitutions extended with zero or more associations,

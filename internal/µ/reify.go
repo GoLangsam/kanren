@@ -8,11 +8,9 @@ func reifyVarFromState(name string) func(s S) X {
 		// TODO:
 		// vari.Able pool implements Fresh & V();
 		// bind.Ings implements newName and uses x := NewVariable, thus producing a X directly
-		v := s.Fresh(name)
-		x := v.Expr()
-		xx := s.Walk(x)
-		bb := bind.New()
-		return bb.Reify(xx).Walk(xx)
+		x := s.Walk(s.Fresh(name).Expr())
+		b := bind.New()
+		return b.Reify(x).Walk(x)
 	}
 }
 
