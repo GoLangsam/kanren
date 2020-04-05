@@ -70,7 +70,7 @@ scheme code:
 
 If n == -1 results in the whole stream being returned.
 */
-func takeStream(n int, s StreamOfStates) []*State {
+func (s StreamOfStates) take(n int) []*State {
 	if n == 0 {
 		return nil
 	}
@@ -79,8 +79,8 @@ func takeStream(n int, s StreamOfStates) []*State {
 	}
 	car, cdr := s()
 	if car != nil {
-		ss := takeStream(n-1, cdr)
+		ss := cdr.take(n - 1)
 		return append([]*State{car}, ss...)
 	}
-	return takeStream(n, cdr)
+	return cdr.take(n)
 }

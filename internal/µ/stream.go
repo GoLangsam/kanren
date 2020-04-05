@@ -1,47 +1,43 @@
 package µ
 
-type head = S
-type tail func() *Stream
+//type head = S
+//type tail func() *Stream
 
 type Stream struct {
-	head
-	tail
+	head S
+	tail func() *Stream
 }
 
-func mZero() *Stream {
-	return nil
+type StreamOfStates = *Stream
+
+func (s Stream) Head() S {
+	return s.head
 }
 
-func nilTail() func() *Stream {
-	return func() *Stream {
-		return mZero()
-	}
+func (s Stream) Tail() StreamOfStates {
+	return s.tail()
 }
 
-func Unit(a S) *Stream {
-	return &Stream{a, nilTail()}
+var mZero StreamOfStates //not &Stream{}, not Cons(nil, nil)
+var nilTail = func() StreamOfStates { return mZero }
+
+func Unit(a S) StreamOfStates {
+	return Cons(a, nilTail)
 }
 
-func choice(a S, s func() *Stream) *Stream {
-	return &Stream{a, s}
+func Cons(head S, tail func() StreamOfStates) StreamOfStates {
+	return &Stream{head, tail}
 }
 
-func (s *Stream) concat(tail func() *Stream) *Stream {
-	if s == mZero() {
-		return tail()
-	} else {
-		return choice(s.head, func() *Stream {
-			return s.tail().concat(tail)
-		})
-	}
+func (s Stream) Concat(tail func() StreamOfStates) StreamOfStates {
+	return Cons(s.Head(), func() *Stream { return s.Tail().Concat(tail) })
 }
 
-func (s *Stream) interleave(s2 *Stream) *Stream {
-	if s == mZero() {
-		return s2
-	} else {
-		return choice(s.head, func() *Stream {
-			return s2.interleave(s.tail())
-		})
-	}
+func (s Stream) Interleave(s2 StreamOfStates) StreamOfStates {
+	return Cons(s.Head(), func() StreamOfStates { return s2.Interleave(s.Tail()) })
+}
+
+// Suspend prepends a empty state in front of the given stream of states.
+func Suspend(s func() StreamOfStates) StreamOfStates {
+	return Cons(*Init(), func() StreamOfStates { return s() })
 }

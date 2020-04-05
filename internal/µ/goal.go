@@ -1,60 +1,74 @@
 package µ
 
+// type E = *Stream // Eventualities
 type Goal func(S) *Stream
 
 // And
 
-func and_composer(g1s *Stream, g2 Goal) *Stream {
-	if g1s == mZero() {
-		return mZero()
-	} else {
-		return g2(g1s.head).concat(func() *Stream {
-			a := g1s.tail()
-			if a == mZero() {
-				return mZero()
-			} else {
-				return and_composer(a, g2)
-			}
-		})
+func (g Goal) and_composer(s *Stream) *Stream {
+	if s == mZero {
+		return mZero
 	}
+
+	return g(s.head).Concat(func() *Stream {
+		a := s.tail()
+		if a == mZero {
+			return mZero
+		}
+		return g.and_composer(a)
+	})
 }
 
-func and_base(g1, g2 Goal) Goal {
+func (g Goal) and_base(g1 Goal) Goal {
 	return func(s S) *Stream {
-		g1s := g1(s)
-		return and_composer(g1s, g2)
+		ss := g1(s)
+		return g.and_composer(ss)
 
 	}
 }
 
 func And(gs ...Goal) Goal {
+	if len(gs) == 0 {
+		return Fail()
+	}
+
 	var g Goal = gs[0]
-	for _, e := range gs[1:] {
-		g = and_base(g, e)
+	for _, h := range gs[1:] {
+		// g = g.and_base(h)
+		g = func(s S) *Stream {
+			return g.and_composer(h(s))
+		}
 	}
 	return g
 }
 
 // OR
 
-func or_base(g1, g2 Goal) Goal {
+func (g Goal) or_base(h Goal) Goal {
 	return func(s S) *Stream {
-		g1s := g1(s)
-		g2s := g2(s)
-		return g1s.interleave(g2s)
-	}
-}
-
-func Fail() Goal {
-	return func(s S) *Stream {
-		return mZero()
+		return g(s).Interleave(h(s))
 	}
 }
 
 func Or(gs ...Goal) Goal {
+	if len(gs) == 0 {
+		return Fail()
+	}
+
 	var g Goal = gs[0]
-	for _, e := range gs[1:] {
-		g = or_base(g, e)
+	for _, h := range gs[1:] {
+		//	g = g.or_base(h)
+		g = func(s S) *Stream {
+			return g(s).Interleave(h(s))
+		}
 	}
 	return g
+}
+
+// Fail
+
+func Fail() Goal {
+	return func(s S) *Stream {
+		return mZero
+	}
 }

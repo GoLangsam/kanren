@@ -20,3 +20,11 @@ func Init() *S {
 		Constraints{},
 	}
 }
+
+func (s S) Clone() S {
+	return S{
+		s.Able,
+		s.Ings.Clone(),
+		s.Constraints,
+	}
+}

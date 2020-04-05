@@ -16,7 +16,7 @@ If n == -1 then all possible states are returned.
 */
 func RunGoal(n int, g Goal) []*State {
 	ss := g(EmptyState())
-	return takeStream(n, ss)
+	return ss.take(n)
 }
 
 // SuccessO is a goal that always returns the input state in the resulting stream of states.

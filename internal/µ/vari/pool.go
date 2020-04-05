@@ -1,7 +1,7 @@
 // package vari provides a tiny factory
 // for named and anonymous variables.
 //
-//
+// use as `vari.Able` (pun intended)
 package vari
 
 import "strconv"
