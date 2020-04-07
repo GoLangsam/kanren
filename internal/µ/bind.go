@@ -7,9 +7,9 @@ func (g Goal) Bind(s StreamOfStates) StreamOfStates {
 	}
 	head := s.Head()
 	if head != nil { // not a suspension => procedure? == false
-		return g(head).Plus(g.Bind(s.Tail()))
+		return g(head).Plus(g.Bind(s))
 	}
 	return Suspend(func() StreamOfStates {
-		return g.Bind(s.Tail())
+		return g.Bind(s)
 	})
 }

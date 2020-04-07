@@ -12,7 +12,7 @@ func Equal(x, y X) Goal {
 	}
 }
 
-// CallFresh expects a function that expects an variable and returns a Goal.
+// CallFresh expects a function that expects a variable and returns a Goal.
 func CallFresh(f func(V) Goal) Goal {
 	return func(s S) StreamOfStates {
 		v := s.V()
@@ -29,7 +29,7 @@ func (g Goal) and_composer(s StreamOfStates) StreamOfStates {
 	}
 
 	return g(s.Head()).Concat(func() StreamOfStates {
-		return g.and_composer(s.Tail())
+		return g.and_composer(s)
 	})
 }
 

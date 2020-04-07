@@ -1,13 +1,13 @@
 package many
 
-type Stream struct {
+type stream struct {
 	head // = S
 	tail // func() *Stream
 }
 
 type head = S
-type tail func() *Stream
-type StreamOfStates = *Stream
+type tail func() *stream
+type StreamOfStates = *stream
 
 func (s StreamOfStates) Head() S {
 	return s.head
@@ -25,7 +25,7 @@ func Unit(a S) StreamOfStates {
 }
 
 func conc(head head, tail tail) StreamOfStates {
-	return &Stream{head, tail}
+	return &stream{head, tail}
 }
 
 // Note: Cons builds the closure for tail internally.
