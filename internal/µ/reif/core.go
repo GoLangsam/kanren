@@ -1,8 +1,5 @@
-package many
+package reif
 
-import "github.com/GoLangsam/kanren/internal/µ/stat"
-
-/*
 import "github.com/GoLangsam/sexpr"
 
 // V represents a logic variable
@@ -12,11 +9,6 @@ type V = *sexpr.Variable
 type X = *sexpr.Expression
 
 var (
-	Parse = sexpr.Parse
-)
-*/
-type S = *stat.E
-
-var (
-	newState = stat.Init
+	//cons   = sexpr.Cons        // used by b.Walk
+	newVar = sexpr.NewVariable // used by b.Reify
 )

@@ -23,7 +23,7 @@ scheme code:
 		)
 	)
 */
-func (s StreamOfStates)Plus(ss StreamOfStates) StreamOfStates {
+func (s StreamOfStates) Plus(ss StreamOfStates) StreamOfStates {
 	if s == nil {
 		return ss
 	}
