@@ -1,4 +1,4 @@
-package µ
+package stat
 
 import "github.com/GoLangsam/kanren/internal/µ/bind"
 import "github.com/GoLangsam/kanren/internal/µ/vari"
@@ -9,25 +9,27 @@ type Constraints struct{}
 // vari.Able pool implements Fresh & V();
 // bind.Ings implements newName and uses x := NewVariable, thus producing a X directly
 
-// S represents a State: Variables, Bindings, Constraints
-type S struct {
-	vari.Able // known variables
+// E represents a State: Variables, Bindings, Constraints
+//
+// use as `stat.E` (pun intended)
+type E struct {
+	*vari.Able // known variables
 	*bind.Ings
 	Constraints
 }
 
 // Init provides an empty state
-func Init() *S {
-	return &S{
+func Init() *E {
+	return &E{
 		vari.Ables(),
 		bind.New(),
 		Constraints{},
 	}
 }
 
-func (s S) Clone() S {
-	return S{
-		s.Able,
+func (s *E) Clone() *E {
+	return &E{
+		s.Able.Clone(),
 		s.Ings.Clone(),
 		s.Constraints,
 	}

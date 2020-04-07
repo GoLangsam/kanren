@@ -1,74 +1,66 @@
 package µ
 
-// type E = *Stream // Eventualities
-type Goal func(S) *Stream
+type Goal func(S) StreamOfStates
+
+// Equal returns a Goal that unifies the input expressions in the output stream.
+func Equal(x, y X) Goal {
+	return func(s S) StreamOfStates {
+		if s.Unify(x, y) {
+			return Unit(s.Clone())
+		}
+		return mZero
+	}
+}
+
+// CallFresh expects a function that expects an variable and returns a Goal.
+func CallFresh(f func(V) Goal) Goal {
+	return func(s S) StreamOfStates {
+		v := s.V()
+		ss := s.Clone()
+		return f(v)(ss)
+	}
+}
 
 // And
 
-func (g Goal) and_composer(s *Stream) *Stream {
+func (g Goal) and_composer(s StreamOfStates) StreamOfStates {
 	if s == mZero {
 		return mZero
 	}
 
-	return g(s.head).Concat(func() *Stream {
-		a := s.tail()
-		if a == mZero {
-			return mZero
-		}
-		return g.and_composer(a)
+	return g(s.Head()).Concat(func() StreamOfStates {
+		return g.and_composer(s.Tail())
 	})
 }
 
-func (g Goal) and_base(g1 Goal) Goal {
-	return func(s S) *Stream {
-		ss := g1(s)
-		return g.and_composer(ss)
-
-	}
-}
-
+// And ...
 func And(gs ...Goal) Goal {
 	if len(gs) == 0 {
-		return Fail()
+		return Failure()
 	}
 
 	var g Goal = gs[0]
 	for _, h := range gs[1:] {
-		// g = g.and_base(h)
-		g = func(s S) *Stream {
-			return g.and_composer(h(s))
+		gg, hh := g, h
+		g = func(s S) StreamOfStates {
+			return gg.and_composer(hh(s))
 		}
 	}
 	return g
 }
 
-// OR
-
-func (g Goal) or_base(h Goal) Goal {
-	return func(s S) *Stream {
-		return g(s).Interleave(h(s))
-	}
-}
-
+// Or ...
 func Or(gs ...Goal) Goal {
 	if len(gs) == 0 {
-		return Fail()
+		return Failure()
 	}
 
 	var g Goal = gs[0]
 	for _, h := range gs[1:] {
-		//	g = g.or_base(h)
-		g = func(s S) *Stream {
-			return g(s).Interleave(h(s))
+		gg, hh := g, h
+		g = func(s S) StreamOfStates {
+			return gg(s).Interleave(hh(s))
 		}
 	}
 	return g
-}
-
-// Fail
-
-func Fail() Goal {
-	return func(s S) *Stream {
-		return mZero
-	}
 }

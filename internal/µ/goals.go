@@ -1,12 +1,5 @@
 package µ
 
-// Success is a goal that always returns the input state in the resulting stream of states.
-func Success() Goal {
-	return func(s S) StreamOfStates {
-		return Unit(s)
-	}
-}
-
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {
 	return func(s S) StreamOfStates {
@@ -14,13 +7,10 @@ func Failure() Goal {
 	}
 }
 
-// Equal returns a Goal that unifies the input expressions in the output stream.
-func Equal(u, v X) Goal {
+// Success is a goal that always returns the input state in the resulting stream of states.
+func Success() Goal {
 	return func(s S) StreamOfStates {
-		if s.Unify(u, v) {
-			return Unit(s.Clone())
-		}
-		return mZero
+		return Unit(s)
 	}
 }
 
