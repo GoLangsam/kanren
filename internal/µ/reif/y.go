@@ -38,10 +38,11 @@ func (y *Y) Clone() *Y {
 func (y *Y) Reify(x X) *Y {
 	xx := y.Walk(x)
 	u, isVariable := xx.AsVariable()
-	if isVariable { // bind u(=xx) to new fresh var
+	switch {
+	case isVariable: // bind u(=xx) to new fresh var
 		v := y.Fresh(y.nextName())
 		y.Bind(u, v.Expr())
-	} else if xx.IsPair() {
+	case xx.IsPair():
 		y.Reify(xx.Car()).Reify(xx.Cdr())
 	}
 	return y
