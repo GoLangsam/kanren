@@ -9,6 +9,7 @@ type V = *sexpr.Variable
 type X = *sexpr.Expression
 
 var (
-	cons   = sexpr.Cons        // used by b.Walk
-	newVar = sexpr.NewVariable // used by b.Reify
+	cons    = sexpr.Cons        // used by b.Walk & b.String
+	newVar  = sexpr.NewVariable // used by b.Reify
+	newList = sexpr.NewList     // used by b.String
 )
