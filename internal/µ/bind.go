@@ -5,7 +5,12 @@ func (g Goal) Bind(s StreamOfStates) StreamOfStates {
 	if s == mZero {
 		return mZero
 	}
-	head := s.Head()
+
+	head, ok := s.Head()
+	if !ok {
+		return mZero
+	}
+
 	if head != nil { // not a suspension => procedure? == false
 		return g(head).Plus(g.Bind(s))
 	}

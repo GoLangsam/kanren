@@ -28,7 +28,11 @@ func (g Goal) and_composer(s StreamOfStates) StreamOfStates {
 		return mZero
 	}
 
-	return g(s.Head()).Concat(func() StreamOfStates {
+	head, ok := s.Head()
+	if !ok {
+		return mZero
+	}
+	return g(head).Concat(func() StreamOfStates {
 		return g.and_composer(s)
 	})
 }

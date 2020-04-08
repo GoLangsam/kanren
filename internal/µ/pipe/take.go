@@ -9,7 +9,10 @@ func (s StreamOfStates) Take(n int) []S {
 	if s == Zero {
 		return nil
 	}
-	head := s.Head()
+	head, ok := s.Head()
+	if !ok {
+		return []S{}
+	}
 	if head == nil {
 		return s.Take(n)
 	}

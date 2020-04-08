@@ -4,8 +4,9 @@ type StreamOfStates <-chan S
 
 var Zero StreamOfStates //=nil, not &Stream{}, not Cons(nil, nil)
 
-func (s StreamOfStates) Head() S {
-	return <-s
+func (s StreamOfStates) Head() (e S, ok bool) {
+	e, ok = <-s
+	return
 }
 
 func Unit(a S) StreamOfStates {

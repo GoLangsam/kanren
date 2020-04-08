@@ -27,7 +27,10 @@ func (s StreamOfStates) Plus(ss StreamOfStates) StreamOfStates {
 	if s == nil {
 		return ss
 	}
-	head := s.Head()
+	head, ok := s.Head()
+	if !ok {
+		return Zero
+	}
 	if head != nil { // not a suspension => procedure? == false
 		return Prepend(head, func() StreamOfStates {
 			return ss.Plus(s)
