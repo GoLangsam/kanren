@@ -1,4 +1,4 @@
-package µ
+package kanren
 
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {

@@ -1,4 +1,4 @@
-package µ
+package kanren
 
 // Conjunction is a goal that returns a logical AND of the input goals.
 func Conjunction(gs ...Goal) Goal {

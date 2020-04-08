@@ -6,16 +6,20 @@ import (
 	"github.com/GoLangsam/sexpr"
 )
 
-type Expression = sexpr.Expression
-
-type Variable = sexpr.Variable
-
-//type Symbol = ast.Symbol
-type Atom = sexpr.Atom
+type X = µ.X
+type V = µ.V
+type Goal = µ.Goal
+type S = µ.S
+type StreamOfStates = µ.StreamOfStates
 
 var (
+	Unit    = µ.Unit
+	Suspend = µ.Suspend
+	mZero   StreamOfStates
+
 	Parse = sexpr.Parse
 
+/*
 	Cons = sexpr.Cons
 
 	NewString   = sexpr.NewString
@@ -25,8 +29,7 @@ var (
 	NewVariable = sexpr.NewVariable
 
 	NewList = sexpr.NewList
+*/
 )
 
 // ============================================================================
-
-type Goal = µ.Goal

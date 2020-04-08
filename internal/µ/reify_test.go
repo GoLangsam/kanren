@@ -1,7 +1,7 @@
 package µ
 
 import (
-	"strings"
+	//	"strings"
 	"testing"
 )
 
@@ -56,6 +56,7 @@ func TestReify(t *testing.T) {
 	}
 }
 
+/*
 func TestNoReify(t *testing.T) {
 	e1 := Equal(
 		sexpr.NewSymbol("olive"),
@@ -82,3 +83,4 @@ func TestNoReify(t *testing.T) {
 		t.Fatalf("got %s != want %s", got, want)
 	}
 }
+*/
