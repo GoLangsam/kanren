@@ -1,9 +1,12 @@
 package kanren
 
+// Fail is an alias for Failure.
+var Fail = Failure
+
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {
 	return func(s S) StreamOfStates {
-		return mZero()
+		return Zero()
 	}
 }
 
@@ -14,23 +17,22 @@ func Success() Goal {
 	}
 }
 
-// Never is a Goal that returns a never ending stream of suspensions.
+// Never is a Goal that returns a never ending evaluation of itself.
+//
+// Note: This is a joke.
+// Use on Your own risk!
 func Never() Goal {
 	return func(s S) StreamOfStates {
-		return Suspend(func() StreamOfStates {
-			return Never()(s)
-		})
+		return Never()(s)
 	}
 }
 
-// Always is a goal that returns a never ending stream of success.
+// Always is a goal that always returns a never ending stream of success.
 func Always() Goal {
 	return func(s S) StreamOfStates {
-		return Suspend(func() StreamOfStates {
-			return Or(
-				Success(),
-				Always(),
-			)(s)
-		})
+		return Disjoint(
+			Success(),
+			Always(),
+		)(s)
 	}
 }

@@ -14,10 +14,8 @@ type StreamOfStates = µ.StreamOfStates
 
 var (
 	Unit       = µ.Unit
-	Suspend    = µ.Suspend
-	mZero      = µ.Zero
+	Zero       = µ.Zero
 	EmptyState = µ.EmptyState
-	Parse      = sexpr.Parse
 	cons       = sexpr.Cons
 
 /*

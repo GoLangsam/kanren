@@ -19,7 +19,6 @@ type S = pipe.S
 type StreamOfStates = pipe.StreamOfStates
 
 var (
-	Suspend = pipe.Suspend
-	Unit    = pipe.Unit
-	Zero    = pipe.Zero
+	Unit = pipe.Unit
+	Zero = pipe.Zero
 )

@@ -18,7 +18,7 @@ func TestOnce(t *testing.T) {
 	)
 	ss := ifte(micro.EmptyState())
 	got := ss.String()
-	want := "(((,y . #f) (,x . #t) . 0))"
+	want := "(((,y . #f) (,x . #t)))"
 	if got != want {
 		t.Fatalf("got %v != want %v", got, want)
 	}

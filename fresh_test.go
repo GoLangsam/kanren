@@ -4,17 +4,6 @@ import "testing"
 
 import "github.com/GoLangsam/sexpr"
 
-/*
-scheme code:
-
-	(run-goal 1
-		(call/fresh kiwi
-			(lambda (fruit)
-				(== plum fruit)
-			)
-		)
-	)
-*/
 func TestFreshKiwi(t *testing.T) {
 	cf := CallFresh(func(fruit X) Goal {
 		return Equal(
@@ -24,7 +13,7 @@ func TestFreshKiwi(t *testing.T) {
 	},
 	)
 	ss := cf(EmptyState())
-	want := "((,v0 . plum) . 1)"
+	want := "(((,~.0 . plum)))"
 	got := ss.String()
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
