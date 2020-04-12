@@ -28,9 +28,11 @@ func (bind *Ings) Clone() *Ings {
 
 // Bind binds x to v, so v is bound to x.
 // Thus, (v . x) resembles a substitution pair.
+//
+// Bind is a noOp if v or x are nil or v is not a Variable.
+//
 // Note: Bind does not avoid circular bindings.
 // Use Occurs to check beforehand.
-// Bind is a nOp if v or x are nil or v is not a Variable.
 func (bind *Ings) Bind(v V, x X) *Ings {
 	if v != nil && v.Atom.Var != nil && x != nil {
 		bind.bound[v] = x

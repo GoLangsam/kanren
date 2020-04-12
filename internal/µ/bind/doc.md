@@ -14,9 +14,12 @@ type Ings struct {
 
 func New() *Ings
 func (bind *Ings) Bind(v V, x X) *Ings
+func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) IsBound(v V) (isBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
+func (bind *Ings) Resolve(x X) X
+func (bind *Ings) String() string
 func (bind *Ings) Subs(v V) (x X, hasSubs bool)
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
@@ -35,15 +38,16 @@ type Ings struct {
 
 func New() *Ings
 func (bind *Ings) Bind(v V, x X) *Ings
+func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) IsBound(v V) (isBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
+func (bind *Ings) Resolve(x X) X
+func (bind *Ings) String() string
 func (bind *Ings) Subs(v V) (x X, hasSubs bool)
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
 func (bind *Ings) exts(v V, x X) bool
-func (bind *Ings) walkV(v V) X
-func (bind *Ings) walkX(x X) X
 				
 -------------------------------------------------------------------------------
 ## go doc -all		
@@ -67,8 +71,13 @@ func New() *Ings
 
 func (bind *Ings) Bind(v V, x X) *Ings
     Bind binds x to v, so v is bound to x. Thus, (v . x) resembles a
-    substitution pair. Note: Bind does not avoid circular bindings.
+    substitution pair.
 
+    Bind is a noOp if v or x are nil or v is not a Variable.
+
+    Note: Bind does not avoid circular bindings. Use Occurs to check beforehand.
+
+func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
     Drop makes v unbound, reports whether v was bound, and returns the
     expression (if any) v was previously bound with.
@@ -79,6 +88,11 @@ func (bind *Ings) IsBound(v V) (isBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
     Occurs reports whether v occurs in x.
 
+func (bind *Ings) Resolve(x X) X
+    Resolve the eXpression along the bindings down to the first non-Variable
+    eXpression or down to the first unbound eXpression
+
+func (bind *Ings) String() string
 func (bind *Ings) Subs(v V) (x X, hasSubs bool)
     Subs returns the expression to which v is bound, if any.
 
@@ -93,8 +107,8 @@ func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
     Walk ... some call it `walkstar` or `walk*`
 
-type V = *sexpr.Variable
-    V represents a logic variable
+type V = X // *sexpr.Variable
+    V is an eXpression which represents a logic variable
 
 type X = *sexpr.Expression
     X represents a symbolic expression
