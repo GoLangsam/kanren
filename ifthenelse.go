@@ -4,10 +4,11 @@ package kanren
 // otherwise it evaluates the ELSE goal.
 func IfThenElse(IF, THEN, ELSE Goal) Goal {
 	return func(s S) StreamOfStates {
-		head, ok := IF(s).Head()
-		IF(s).Drop()
+		IFs := IF(s)
+		head, ok := IFs.Head()
+		IFs.Drop()
 
-		if ok && head != nil { // && head.Len() != 0 {
+		if ok && head != nil {
 			return THEN(s) // then
 		} else {
 			return ELSE(s) // else

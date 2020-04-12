@@ -4,19 +4,20 @@ import (
 	"testing"
 )
 
-import micro "github.com/GoLangsam/kanren/internal/µ"
-import "github.com/GoLangsam/sexpr"
-
 func TestOnce(t *testing.T) {
+	e := EmptyState()
+	x := e.Fresh("x")
+	y := e.Fresh("y")
+
 	ifte := IfThenElse(
 		Once(Disjoint(
-			Equal(sexpr.NewSymbol("#t"), sexpr.NewVariable("x")),
-			Equal(sexpr.NewSymbol("#f"), sexpr.NewVariable("x")),
+			Equal(NewSymbol("#t"), x),
+			Equal(NewSymbol("#f"), x),
 		)),
-		Equal(sexpr.NewSymbol("#f"), sexpr.NewVariable("y")),
-		Equal(sexpr.NewSymbol("#t"), sexpr.NewVariable("y")),
+		Equal(NewSymbol("#f"), y),
+		Equal(NewSymbol("#t"), y),
 	)
-	ss := ifte(micro.EmptyState())
+	ss := ifte(EmptyState())
 	got := ss.String()
 	want := "(((,y . #f) (,x . #t)))"
 	if got != want {
