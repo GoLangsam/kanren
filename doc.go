@@ -13,15 +13,14 @@ type S = µ.S
 type StreamOfStates = µ.StreamOfStates
 
 var (
-	Unit    = µ.Unit
-	Suspend = µ.Suspend
-	mZero   StreamOfStates
-
-	Parse = sexpr.Parse
+	Unit       = µ.Unit
+	Suspend    = µ.Suspend
+	mZero      = µ.Zero
+	EmptyState = µ.EmptyState
+	Parse      = sexpr.Parse
+	cons       = sexpr.Cons
 
 /*
-	Cons = sexpr.Cons
-
 	NewString   = sexpr.NewString
 	NewSymbol   = sexpr.NewSymbol
 	NewInt      = sexpr.NewInt

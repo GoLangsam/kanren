@@ -1,14 +1,10 @@
 package bind
 
 func (bind *Ings) String() string {
-	ss := make([]X, len(bind.bound))
-
-	f := func(key V, val X) X {
-		return cons(key.Expr(), val)
-	}
+	ss := make([]X, 0, len(bind.bound))
 
 	for k, x := range bind.bound {
-		ss = append(ss, f(k, x))
+		ss = append(ss, cons(k, x))
 	}
 
 	return newList(ss...).String()

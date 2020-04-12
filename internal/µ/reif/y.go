@@ -4,13 +4,13 @@ package reif
 import "github.com/GoLangsam/kanren/internal/µ/bind"
 import "github.com/GoLangsam/kanren/internal/µ/vari"
 
-// Y extends variables and their bindings
+// Y extends vari.Ables and their bind.Ings
 // with Reify,
 // which needs the ability to construct fresh variables on-the-fly.
 //
 // Use as `reif.Y` (pun intended).
 //
-// The zero value is not useful - initialize with `reif.Yer()`.
+// The zero value is not useful - initialize with `reif.Ier()`.
 type Y struct {
 	*vari.Able     // known variables
 	*bind.Ings     // their current bindings
@@ -30,20 +30,31 @@ func Ier() *Y {
 func (y *Y) Clone() *Y {
 	return &Y{
 		Able: y.Able,
-		Ings: y.Ings,
+		Ings: y.Ings.Clone(),
 	}
+}
+
+func (y *Y) BindFresh(u V) *Y {
+	yy := &Y{
+		Able:  y.Able,
+		Ings:  y.Ings.Clone(),
+		count: y.count,
+	}
+	v := yy.Fresh(yy.nextName())
+	yy.Bind(u, v)
+	return yy
 }
 
 // Reify ...
 func (y *Y) Reify(x X) *Y {
-	xx := y.Walk(x)
-	u, isVariable := xx.AsVariable()
+	s := y
+	x = s.Walk(x)
+	_, isVariable := x.AsVariable()
 	switch {
 	case isVariable: // bind u(=xx) to new fresh var
-		v := y.Fresh(y.nextName())
-		y.Bind(u, v.Expr())
-	case xx.IsPair():
-		y.Reify(xx.Car()).Reify(xx.Cdr())
+		return s.BindFresh(x) // y.Bind(u, v.Expr())
+	case x.IsPair():
+		return s.Reify(x.Car()).Reify(x.Cdr())
 	}
-	return y
+	return s
 }

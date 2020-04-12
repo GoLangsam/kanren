@@ -2,10 +2,14 @@ package pipe
 
 type StreamOfStates <-chan S
 
-var Zero StreamOfStates //=nil, not &Stream{}, not Cons(nil, nil)
+func Zero() StreamOfStates {
+	zero := make(chan S)
+	close(zero)
+	return zero
+}
 
-func (s StreamOfStates) Head() (e S, ok bool) {
-	e, ok = <-s
+func (s StreamOfStates) Head() (a S, ok bool) {
+	a, ok = <-s
 	return
 }
 
@@ -31,7 +35,7 @@ func Prepend(a S, thunk func() StreamOfStates) StreamOfStates {
 	return cha
 }
 
-// Suspend prepends a empty state in front of the given stream-of-states thunk.
+// Suspend prepends an empty state in front of the given stream-of-states thunk.
 func Suspend(thunk func() StreamOfStates) StreamOfStates {
 	return Prepend(newState(), thunk)
 }
@@ -47,6 +51,8 @@ func (s StreamOfStates) Suspend() StreamOfStates {
 	}()
 	return cha
 }
+
+// used by and_composer
 
 func (s StreamOfStates) Concat(thunk func() StreamOfStates) StreamOfStates {
 	cha := make(chan S)

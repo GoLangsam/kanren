@@ -4,9 +4,5 @@
 
 package pipe
 
-import (
-	"github.com/GoLangsam/kanren/internal/µ/stat"
-)
-
 // anyThing is the generic type flowing thru the pipe network.
-type anyThing = *stat.E
+type anyThing = S

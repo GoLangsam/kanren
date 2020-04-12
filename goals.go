@@ -3,7 +3,7 @@ package kanren
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {
 	return func(s S) StreamOfStates {
-		return mZero
+		return mZero()
 	}
 }
 

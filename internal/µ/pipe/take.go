@@ -6,7 +6,7 @@ func (s StreamOfStates) Take(n int) []S {
 	if n == 0 {
 		return nil
 	}
-	if s == Zero {
+	if s == nil {
 		return nil
 	}
 	head, ok := s.Head()

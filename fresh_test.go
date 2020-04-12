@@ -1,6 +1,5 @@
-package µ
+package kanren
 
-import "fmt"
 import "testing"
 
 import "github.com/GoLangsam/sexpr"
@@ -17,21 +16,16 @@ scheme code:
 	)
 */
 func TestFreshKiwi(t *testing.T) {
-	ss := RunGoal(1,
-		CallFresh(func(fruit V) Goal {
-			return Equal(
-				sexpr.NewSymbol("plum"),
-				fruit.Expr(),
-			)
-		},
-		),
+	cf := CallFresh(func(fruit X) Goal {
+		return Equal(
+			sexpr.NewSymbol("plum"),
+			fruit,
+		)
+	},
 	)
-	if len(ss) != 1 {
-		t.Fatalf("expected %d, but got %d results", 1, len(ss))
-	}
+	ss := cf(EmptyState())
 	want := "((,v0 . plum) . 1)"
-	//got := ss[0].String()
-	got := fmt.Sprintf("%v", ss[0])
+	got := ss.String()
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}

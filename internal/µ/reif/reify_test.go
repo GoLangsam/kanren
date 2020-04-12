@@ -38,18 +38,16 @@ func TestReify(t *testing.T) {
 	if !e.IsPair() {
 		t.Fatalf("expected list")
 	}
-
-	xv := sexpr.NewVariable("x")
-	x, _ := xv.AsVariable()
-	y, _ := sexpr.NewVariable("y").AsVariable()
-	w, _ := sexpr.NewVariable("w").AsVariable()
-
+	fmt.Printf("%v\n", e)
 	ss := Ier()
+	x := ss.Fresh("x")
+	y := ss.Fresh("y")
+	w := ss.Fresh("w")
 	ss.Bind(x, e.Car().Cdr())
 	ss.Bind(y, e.Cdr().Car().Cdr())
 	ss.Bind(w, e.Cdr().Cdr().Car().Cdr())
-
-	gote := ss.Reify(xv)
+	fmt.Println("ss:", ss)
+	gote := ss.Reify(x)
 	got := fmt.Sprintf("%v", gote)
 	want := "(_0 (_1 _0) corn _2 ((ice) _2))"
 	if got != want {

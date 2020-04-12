@@ -1,0 +1,124 @@
+package kanren
+
+import (
+	"testing"
+)
+
+import micro "github.com/GoLangsam/kanren/internal/µ"
+import "github.com/GoLangsam/sexpr"
+
+/*
+(let
+	(
+		(q (var 'q))
+	)
+	(map
+		(reify q)
+		(run-goal #f
+			(call/fresh 'x
+				(lambda (x)
+					(call/fresh 'y
+						(lambda (y)
+							(conj
+								(== `(,x ,y) q)
+								(appendo x y `(cake & ice d t))
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+)
+*/
+
+// results in all the combinations of two lists that when appended will result in (cake & ice d t)
+func TestAppendAllCombinations(t *testing.T) {
+	states := micro.RunGoal(
+		-1,
+		micro.CallFresh(func(x X) Goal {
+			return micro.CallFresh(func(y X) Goal {
+				return Conjunction(
+					Equal(
+						cons(x, cons(y, nil)),
+						sexpr.NewVariable("q"),
+					),
+					Append(
+						x,
+						y,
+						sexpr.NewList(
+							sexpr.NewSymbol("cake"),
+							sexpr.NewSymbol("&"),
+							sexpr.NewSymbol("ice"),
+							sexpr.NewSymbol("d"),
+							sexpr.NewSymbol("t"),
+						),
+					),
+				)
+			})
+		}),
+	)
+	sexprs := micro.Reify("q", states)
+	got := sexpr.NewList(sexprs...).String()
+	want := "((() (cake & ice d t)) ((cake) (& ice d t)) ((cake &) (ice d t)) ((cake & ice) (d t)) ((cake & ice d) (t)) ((cake & ice d t) ()))"
+	if got != want {
+		t.Fatalf("got %s != want %s", got, want)
+	}
+}
+
+func TestAppendSingleList(t *testing.T) {
+	subs := micro.RunGoal(
+		-1,
+		Append(
+			sexpr.Cons(sexpr.NewSymbol("a"), nil),
+			sexpr.Cons(sexpr.NewSymbol("b"), nil),
+			sexpr.NewVariable("q"),
+		),
+	)
+	ss := micro.Reify("q", subs)
+	got := sexpr.NewList(ss...).String()
+	want := "((a b))"
+	if got != want {
+		t.Fatalf("got %s != want %s", got, want)
+	}
+}
+
+func TestAppendSingleAtom(t *testing.T) {
+	subs := micro.RunGoal(
+		-1,
+		Append(
+			sexpr.Cons(sexpr.NewSymbol("a"), nil),
+			sexpr.NewSymbol("b"),
+			sexpr.NewVariable("q"),
+		),
+	)
+	ss := micro.Reify("q", subs)
+	got := sexpr.NewList(ss...).String()
+	want := "((a . b))"
+	if got != want {
+		t.Fatalf("got %s != want %s", got, want)
+	}
+}
+
+func TestCar(t *testing.T) {
+	ifte := IfThenElse(
+		Car(
+			sexpr.NewList(
+				sexpr.NewSymbol("a"),
+				sexpr.NewSymbol("c"),
+				sexpr.NewSymbol("o"),
+				sexpr.NewSymbol("r"),
+				sexpr.NewSymbol("n"),
+			),
+			sexpr.NewSymbol("a"),
+		),
+		Equal(sexpr.NewSymbol("#t"), sexpr.NewVariable("y")),
+		Equal(sexpr.NewSymbol("#f"), sexpr.NewVariable("y")),
+	)
+	ss := ifte(micro.EmptyState())
+	got := ss.String()
+	want := "(((,y . #t) (,v0 c o r n) . 1))"
+	if got != want {
+		t.Fatalf("got %v != want %v", got, want)
+	}
+}

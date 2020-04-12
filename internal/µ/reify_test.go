@@ -39,11 +39,11 @@ func TestReify(t *testing.T) {
 		t.Fatalf("expected list")
 	}
 
-	x, _ := sexpr.NewVariable("x").AsVariable()
-	y, _ := sexpr.NewVariable("y").AsVariable()
-	w, _ := sexpr.NewVariable("w").AsVariable()
+	ss := EmptyState()
+	x := ss.Fresh("x")
+	y := ss.Fresh("y")
+	w := ss.Fresh("w")
 
-	ss := newState()
 	ss.Bind(x, e.Car().Cdr())
 	ss.Bind(y, e.Cdr().Car().Cdr())
 	ss.Bind(w, e.Cdr().Cdr().Car().Cdr())

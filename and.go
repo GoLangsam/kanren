@@ -3,13 +3,13 @@ package kanren
 // And
 
 func and_composer(g Goal, s StreamOfStates) StreamOfStates {
-	if s == mZero {
-		return mZero
+	if s == nil {
+		return mZero()
 	}
 
 	head, ok := s.Head()
 	if !ok {
-		return mZero
+		return mZero()
 	}
 	return g(head).Concat(func() StreamOfStates {
 		return and_composer(g, s)

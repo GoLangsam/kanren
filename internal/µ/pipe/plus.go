@@ -23,20 +23,25 @@ scheme code:
 		)
 	)
 */
+
+// Plus is the monadic append.
 func (s StreamOfStates) Plus(ss StreamOfStates) StreamOfStates {
 	if s == nil {
 		return ss
 	}
 	head, ok := s.Head()
 	if !ok {
-		return Zero
+		return Zero()
 	}
-	if head != nil { // not a suspension => procedure? == false
+
+	if head == nil { // a suspension => procedure? == true
+		return Suspend( /**/ func() StreamOfStates {
+			return ss.Plus(s)
+		})
+	}
+	{
 		return Prepend(head, func() StreamOfStates {
 			return ss.Plus(s)
 		})
 	}
-	return Suspend(func() StreamOfStates {
-		return ss.Plus(s)
-	})
 }

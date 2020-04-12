@@ -18,22 +18,23 @@ func New() *Ings {
 	}
 }
 
-/*
-// Clone provides a clone of b.
 func (bind *Ings) Clone() *Ings {
 	clone := New()
-	for v, x := range bind.bound {
-		clone.bound[v] = x
+	for k, v := range bind.bound {
+		clone.bound[k] = v
 	}
 	return clone
 }
-*/
 
 // Bind binds x to v, so v is bound to x.
 // Thus, (v . x) resembles a substitution pair.
 // Note: Bind does not avoid circular bindings.
+// Use Occurs to check beforehand.
+// Bind is a nOp if v or x are nil or v is not a Variable.
 func (bind *Ings) Bind(v V, x X) *Ings {
-	bind.bound[v] = x
+	if v != nil && v.Atom.Var != nil && x != nil {
+		bind.bound[v] = x
+	}
 	return bind
 }
 
@@ -62,35 +63,20 @@ func (bind *Ings) Subs(v V) (x X, hasSubs bool) {
 	return
 }
 
-// walkV ...
-func (bind *Ings) walkV(v V) X {
-	xx, found := bind.Subs(v)
-	if !found {
-		return v.Expr()
+// Resolve the eXpression
+// along the bindings
+// down to the first non-Variable eXpression
+// or down to the first unbound eXpression
+func (bind *Ings) Resolve(x X) X {
+	if x.IsVariable() && bind.bound[x] != nil {
+		return bind.Resolve(bind.bound[x])
 	}
-	vx, isXxVariable := xx.AsVariable()
-	if !isXxVariable {
-		return xx
-	}
-	return bind.walkV(vx)
-}
-
-// walkX ...
-func (bind *Ings) walkX(x X) X {
-	vx, isXxVariable := x.AsVariable()
-	if !isXxVariable {
-		return x
-	}
-	xx, found := bind.Subs(vx)
-	if !found {
-		return x
-	}
-	return bind.walkX(xx)
+	return x
 }
 
 // Walk ... some call it `walkstar` or `walk*`
 func (bind *Ings) Walk(x X) X {
-	xx := bind.walkX(x)
+	xx := bind.Resolve(x)
 	if xx.IsVariable() {
 		return xx
 	}
@@ -105,13 +91,13 @@ func (bind *Ings) Walk(x X) X {
 
 // Occurs reports whether v occurs in x.
 func (bind *Ings) Occurs(v V, x X) bool {
-	xx := bind.walkX(x)
-	u, isVariable := xx.AsVariable()
+	x = bind.Resolve(x)
+	u, isVariable := x.AsVariable()
 	if isVariable {
-		return u.Equal(v)
+		return u.Equal(v.Atom.Var)
 	}
-	if xx.IsPair() {
-		return bind.Occurs(v, xx.Car()) || bind.Occurs(v, xx.Cdr())
+	if x.IsPair() {
+		return bind.Occurs(v, x.Car()) || bind.Occurs(v, x.Cdr())
 	}
 	return false
 }
@@ -132,35 +118,29 @@ func (bind *Ings) exts(v V, x X) bool {
 // and reports its success.
 // Circular bindings imply failure (ok = false).
 func (bind *Ings) Unify(x, y X) bool {
-	xx := x
-	vx, isXxVariable := x.AsVariable()
-	if isXxVariable {
-		xx = bind.walkV(vx)
-	}
+	x = bind.Resolve(x)
+	y = bind.Resolve(y)
 
-	yy := y
+	vx, isXxVariable := x.AsVariable()
 	vy, isYyVariable := y.AsVariable()
-	if isYyVariable {
-		yy = bind.walkV(vy)
-	}
 
 	if isXxVariable && isYyVariable && vx.Equal(vy) {
 		return true
 	}
 
 	if isXxVariable {
-		return bind.exts(vx, yy)
+		return bind.exts(x, y)
 	}
 	if isYyVariable {
-		return bind.exts(vy, xx)
+		return bind.exts(y, x)
 	}
 
-	if xx.IsPair() && yy.IsPair() {
-		sok := bind.Unify(xx.Car(), yy.Car())
-		if !sok {
-			return false
+	if x.IsPair() && y.IsPair() {
+		uniCars := bind.Unify(x.Car(), y.Car())
+		if uniCars {
+			return bind.Unify(x.Cdr(), y.Cdr())
 		}
-		return bind.Unify(xx.Cdr(), yy.Cdr())
+		return false
 	}
-	return xx.Equal(yy)
+	return x.Equal(y)
 }

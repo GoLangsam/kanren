@@ -2,14 +2,13 @@ package bind
 
 import "github.com/GoLangsam/sexpr"
 
-// V represents a logic variable
-type V = *sexpr.Variable
+// V is an eXpression which represents a logic variable
+type V = X // *sexpr.Variable
 
 // X represents a symbolic expression
 type X = *sexpr.Expression
 
 var (
-	cons    = sexpr.Cons        // used by b.Walk & b.String
-	newVar  = sexpr.NewVariable // used by b.Reify
-	newList = sexpr.NewList     // used by b.String
+	cons    = sexpr.Cons    // used by b.Walk & b.String
+	newList = sexpr.NewList // used by b.String
 )
