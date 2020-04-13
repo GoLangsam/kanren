@@ -314,6 +314,9 @@ His blog is at http://www.catonmat.net/  --  good coders code, great reuse.
 
 ### Clojure
 
+**[core.logic)](https://github.com/clojure/core.logic/)**
+**[core.logic.wiki](https://github.com/clojure/core.logic.wiki/)**
+
 **[logic-tutorial](https://github.com/swannodette/logic-tutorial)**
 
 ### Rust
@@ -324,8 +327,30 @@ His blog is at http://www.catonmat.net/  --  good coders code, great reuse.
 
 **[gologic](https://github.com/hiredman/gologic/)** includes examples
 
-**[]()**
+**[gominikanren](https://github.com/awalterschulze/gominikanren/)**
+
+**[ukanren-go](https://github.com/elliotdavies/ukanren-go/)**
 
 ## Bibliograpy
 
 **[Fairness](http://okmij.org/ftp/Computation/monads.html#fair-bt-stream)** mentions early Kanren.
+
+## Notes todo
+
+Plenty of other miniKanren use log-time persistent maps for their substitutions; core.logic (https://github.com/clojure/core.logic) and veneer (https://github.com/tca/veneer) certainly do.
+
+---
+[JaCoP](http://jacop.osolpro.com) is a finite domain solver written in
+pure Java that has been in continuous development since 2001. In the
+yearly [MiniZinc](http://www.minizinc.org) constraint challenges it
+has received the Silver award in the fixed category for the past three
+years.
+
+Some basic testing seems to show that JaCoP is anywhere from 10X-100X
+faster than core.logic at solving Finite Domain problems. While there
+is a considerable amount of work to be done to improve the performance
+of core.logic's general constraint framework, it's unlikely we'll
+achieve JaCoP finite domain solving performance in the near
+future. Thus JaCoP integration is attractive.
+
+---

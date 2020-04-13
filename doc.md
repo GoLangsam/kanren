@@ -5,6 +5,7 @@
 type Goal = µ.Goal
 
 func Always() Goal
+func Any(g Goal) Goal
 func Append(l, t, out X) Goal
 func CallFresh(f func(X) Goal) Goal
 func Car(list, head X) Goal
@@ -42,6 +43,11 @@ type Goal = µ.Goal
 
 func Always() Goal
     Always is a goal that always returns a never ending stream of success.
+
+    Note: This is a joke. Use on Your own risk!
+
+func Any(g Goal) Goal
+    Any is a goal that keeps returning g forever.
 
 func Append(l, t, out X) Goal
     Append is the relation: append(l, t) == out.

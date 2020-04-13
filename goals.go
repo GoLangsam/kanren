@@ -28,11 +28,24 @@ func Never() Goal {
 }
 
 // Always is a goal that always returns a never ending stream of success.
+//
+// Note: This is a joke.
+// Use on Your own risk!
 func Always() Goal {
 	return func(s S) StreamOfStates {
 		return Disjoint(
 			Success(),
 			Always(),
+		)(s)
+	}
+}
+
+// Any is a goal that keeps returning g forever.
+func Any(g Goal) Goal {
+	return func(s S) StreamOfStates {
+		return Disjoint(
+			g,
+			Any(g),
 		)(s)
 	}
 }
