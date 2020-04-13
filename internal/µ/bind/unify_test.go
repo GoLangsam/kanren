@@ -2,13 +2,11 @@ package bind
 
 import "fmt"
 
-import "github.com/GoLangsam/sexpr"
-
 func ExampleIngs_Bind() {
 	b := New()
 
-	five := sexpr.NewInt(5)
-	x := sexpr.NewVariable("x")
+	five := NewInt(5)
+	x := NewVariable("x")
 	// vx, _ := x.AsVariable()
 
 	b.Bind(x, five)
@@ -22,10 +20,10 @@ func ExampleIngs_Bind() {
 func ExampleIngs_Unify_yes() {
 	b := New()
 
-	five := sexpr.NewInt(5)
-	x := sexpr.NewVariable("x")
-	y := sexpr.NewVariable("y")
-	z := sexpr.NewVariable("z")
+	five := NewInt(5)
+	x := NewVariable("x")
+	y := NewVariable("y")
+	z := NewVariable("z")
 
 	b.Bind(x, five)
 	b.Bind(y, five)
@@ -59,10 +57,10 @@ func ExampleIngs_Unify_yes() {
 func ExampleIngs_Unify_false() {
 	b := New()
 
-	four := sexpr.NewInt(4)
-	five := sexpr.NewInt(5)
-	x := sexpr.NewVariable("x")
-	y := sexpr.NewVariable("y")
+	four := NewInt(4)
+	five := NewInt(5)
+	x := NewVariable("x")
+	y := NewVariable("y")
 
 	b.Bind(x, four)
 	b.Bind(y, five)

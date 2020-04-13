@@ -3,8 +3,6 @@ package kanren
 import (
 	//	"strings"
 	"testing"
-
-	"github.com/GoLangsam/sexpr"
 )
 
 func TestEqual(t *testing.T) {
@@ -18,11 +16,11 @@ func TestEqual(t *testing.T) {
 	for _, test := range tests {
 		u, v, want := test.u, test.v, test.want
 		t.Run("((== "+u+" "+v+") empty-s)", func(t *testing.T) {
-			uexpr, err := sexpr.Parse(u)
+			uexpr, err := Parse(u)
 			if err != nil {
 				t.Fatal(err)
 			}
-			vexpr, err := sexpr.Parse(v)
+			vexpr, err := Parse(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -67,7 +65,7 @@ func TestDisjointO(t *testing.T) {
 
 	d := Disjoint(
 		Equal(
-			sexpr.NewSymbol("olive"),
+			NewSymbol("olive"),
 			x,
 		),
 		Failure(),
@@ -91,7 +89,7 @@ func TestDisjoint2(t *testing.T) {
 	d := Disjoint(
 		Failure(),
 		Equal(
-			sexpr.NewSymbol("olive"),
+			NewSymbol("olive"),
 			x,
 		),
 	)(e)
@@ -150,11 +148,11 @@ func TestRunGoalDisj2(t *testing.T) {
 	x := e.Fresh("x")
 
 	e1 := Equal(
-		sexpr.NewSymbol("olive"),
+		NewSymbol("olive"),
 		x,
 	)
 	e2 := Equal(
-		sexpr.NewSymbol("oil"),
+		NewSymbol("oil"),
 		x,
 	)
 	g := Disjoint(e1, e2)
@@ -173,11 +171,11 @@ func TestRunGoalConj2NoResults(t *testing.T) {
 	x := e.Fresh("x")
 
 	e1 := Equal(
-		sexpr.NewSymbol("olive"),
+		NewSymbol("olive"),
 		x,
 	)
 	e2 := Equal(
-		sexpr.NewSymbol("oil"),
+		NewSymbol("oil"),
 		x,
 	)
 	g := Conjunction(e1, e2)
@@ -196,11 +194,11 @@ func TestRunGoalConj2OneResults(t *testing.T) {
 	x := e.Fresh("x")
 
 	e1 := Equal(
-		sexpr.NewSymbol("olive"),
+		NewSymbol("olive"),
 		x,
 	)
 	e2 := Equal(
-		sexpr.NewSymbol("olive"),
+		NewSymbol("olive"),
 		x,
 	)
 	g := Conjunction(e1, e2)

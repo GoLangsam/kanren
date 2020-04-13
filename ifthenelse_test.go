@@ -4,16 +4,14 @@ import (
 	"testing"
 )
 
-import "github.com/GoLangsam/sexpr"
-
 func TestIfThenElseSuccess(t *testing.T) {
 	s := EmptyState()
 	y := s.Fresh("y")
 
 	ifte := IfThenElse(
 		Success(),
-		Equal(sexpr.NewSymbol("#f"), y),
-		Equal(sexpr.NewSymbol("#t"), y),
+		Equal(NewSymbol("#f"), y),
+		Equal(NewSymbol("#t"), y),
 	)
 	ss := ifte(s)
 	got := ss.String()
@@ -29,8 +27,8 @@ func TestIfThenElseFailure(t *testing.T) {
 
 	ifte := IfThenElse(
 		Failure(),
-		Equal(sexpr.NewSymbol("#f"), y),
-		Equal(sexpr.NewSymbol("#t"), y),
+		Equal(NewSymbol("#f"), y),
+		Equal(NewSymbol("#t"), y),
 	)
 	ss := ifte(s)
 	got := ss.String()
@@ -46,9 +44,9 @@ func TestIfThenElseXIsTrue(t *testing.T) {
 	y := s.Fresh("y")
 
 	ifte := IfThenElse(
-		Equal(sexpr.NewSymbol("#t"), x),
-		Equal(sexpr.NewSymbol("#f"), y),
-		Equal(sexpr.NewSymbol("#t"), y),
+		Equal(NewSymbol("#t"), x),
+		Equal(NewSymbol("#f"), y),
+		Equal(NewSymbol("#t"), y),
 	)
 	ss := ifte(s)
 	got := ss.String()
@@ -65,11 +63,11 @@ func TestIfThenElseDisjoint(t *testing.T) {
 
 	ifte := IfThenElse(
 		Disjoint(
-			Equal(sexpr.NewSymbol("#t"), x),
-			Equal(sexpr.NewSymbol("#f"), x),
+			Equal(NewSymbol("#t"), x),
+			Equal(NewSymbol("#f"), x),
 		),
-		Equal(sexpr.NewSymbol("#f"), y),
-		Equal(sexpr.NewSymbol("#t"), y),
+		Equal(NewSymbol("#f"), y),
+		Equal(NewSymbol("#t"), y),
 	)
 	ss := ifte(s)
 	got := ss.String()

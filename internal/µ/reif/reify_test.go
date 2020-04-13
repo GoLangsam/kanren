@@ -5,8 +5,6 @@ import (
 	"testing"
 )
 
-import "github.com/GoLangsam/sexpr"
-
 /*
 scheme code:
 
@@ -31,7 +29,7 @@ func TestReify(t *testing.T) {
 	a2 := "(,y . corn)"
 	a3 := "(,w . (,v ,u))"
 	s := "(" + a1 + " " + a2 + " " + a3 + ")"
-	e, err := sexpr.Parse(s)
+	e, err := Parse(s)
 	if err != nil {
 		t.Fatal(err)
 	}

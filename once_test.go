@@ -19,7 +19,7 @@ func TestOnce(t *testing.T) {
 	)
 	ss := ifte(EmptyState())
 	got := ss.String()
-	want := "(((,y . #f) (,x . #t)))"
+	want := "(((,x . #t) (,y . #f)))"
 	if got != want {
 		t.Fatalf("got %v != want %v", got, want)
 	}

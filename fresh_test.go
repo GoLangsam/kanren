@@ -2,12 +2,10 @@ package kanren
 
 import "testing"
 
-import "github.com/GoLangsam/sexpr"
-
 func TestFreshKiwi(t *testing.T) {
 	cf := CallFresh(func(fruit X) Goal {
 		return Equal(
-			sexpr.NewSymbol("plum"),
+			NewSymbol("plum"),
 			fruit,
 		)
 	},

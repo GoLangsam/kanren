@@ -1,10 +1,11 @@
-package kanren
+package reif
 
 import (
 	"github.com/GoLangsam/sexpr"
 )
 
 var (
+	Cons  = sexpr.Cons
 	Parse = sexpr.Parse
 
 	// NewVariable = sexpr.NewVariable must NOT be used! Use Fresh instead!
