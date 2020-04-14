@@ -49,9 +49,8 @@ func (y *Y) BindFresh(u V) *Y {
 func (y *Y) Reify(x X) *Y {
 	s := y
 	x = s.Walk(x)
-	_, isVariable := x.AsVariable()
 	switch {
-	case isVariable: // bind u(=xx) to new fresh var
+	case x.IsVariable(): // bind u(=xx) to new fresh var
 		return s.BindFresh(x) // y.Bind(u, v.Expr())
 	case x.IsPair():
 		return s.Reify(x.Car()).Reify(x.Cdr())

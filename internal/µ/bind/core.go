@@ -9,6 +9,6 @@ type V = X // *sexpr.Variable
 type X = *sexpr.Expression
 
 var (
-	cons    = sexpr.Cons    // used by b.Walk & b.String
+	cons    = sexpr.Cons    // used by b.String & b.Walk
 	newList = sexpr.NewList // used by b.String
 )
