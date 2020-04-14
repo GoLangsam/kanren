@@ -71,7 +71,8 @@ func TestIfThenElseDisjoint(t *testing.T) {
 	)
 	ss := ifte(s)
 	got := ss.String()
-	want := "(((,y . #f) (,x . #t)) ((,y . #f) (,x . #f)))"
+	//nt := "(((,y . #f) (,x . #t)) ((,y . #f) (,x . #f)))" // TODO: this is wrong; values of IF are irrelevant
+	want := "(((,x . #t) (,y . #f)))"
 	if got != want {
 		t.Fatalf("got %v != want %v", got, want)
 	}

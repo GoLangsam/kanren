@@ -2,7 +2,7 @@
 				
 -------------------------------------------------------------------------------
 ## go doc .  Goal		
-type Goal = µ.Goal
+type Goal func(S) StreamOfStates
 
 func Always() Goal
 func Any(g Goal) Goal
@@ -29,9 +29,8 @@ Package kanren implements relational symbolic logic
 VARIABLES
 
 var (
-	Unit       = µ.Unit
-	Zero       = µ.Zero
-	EmptyState = µ.EmptyState
+	Unit = µ.Unit
+	Zero = µ.Zero
 )
 var Fail = Failure
     Fail is an alias for Failure.
@@ -39,7 +38,7 @@ var Fail = Failure
 
 TYPES
 
-type Goal = µ.Goal
+type Goal func(S) StreamOfStates
 
 func Always() Goal
     Always is a goal that always returns a never ending stream of success.
@@ -105,8 +104,6 @@ func Success() Goal
 type S = µ.S
 
 type StreamOfStates = µ.StreamOfStates
-
-type V = µ.V
 
 type X = µ.X
 

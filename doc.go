@@ -7,14 +7,16 @@ import (
 )
 
 type X = µ.X
-type V = µ.V
-type Goal = µ.Goal
+
+//type V = µ.V
+
+type Goal func(S) StreamOfStates
+
 type S = µ.S
 type StreamOfStates = µ.StreamOfStates
 
 var (
-	Unit       = µ.Unit
-	Zero       = µ.Zero
-	EmptyState = µ.EmptyState
-	cons       = sexpr.Cons
+	Unit = µ.Unit
+	Zero = µ.Zero
+	cons = sexpr.Cons
 )
