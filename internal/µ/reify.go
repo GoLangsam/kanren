@@ -1,18 +1,12 @@
 package µ
 
-import "github.com/GoLangsam/kanren/internal/µ/reif"
-
 // reifyVarFromState is a curried function that reifies the input variable for the given bindings.
 func reifyVarFromState(v X) func(s S) X {
 	return func(s S) X {
-		println("v:", v.String())
 		x := s.Walk(v)
-		println("x:", x.String())
-		b := reif.Ier()
+		b := s.Clone()
 		r := b.Reify(x)
-		println("r:", r.String())
 		z := r.Walk(x)
-		println("z:", z.String())
 		return z
 	}
 }

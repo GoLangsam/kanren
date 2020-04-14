@@ -10,7 +10,7 @@ func TestFreshKiwi(t *testing.T) {
 		)
 	},
 	)
-	ss := cf(EmptyState())
+	ss := cf(NewS())
 	want := "(((,~.0 . plum)))"
 	got := ss.String()
 	if got != want {

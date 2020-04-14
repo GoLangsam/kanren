@@ -5,7 +5,7 @@ import (
 )
 
 func TestOnce(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 	y := e.Fresh("y")
 
@@ -17,9 +17,10 @@ func TestOnce(t *testing.T) {
 		Equal(NewSymbol("#f"), y),
 		Equal(NewSymbol("#t"), y),
 	)
-	ss := ifte(EmptyState())
+	ss := ifte(NewS())
 	got := ss.String()
-	want := "(((,x . #t) (,y . #f)))"
+	//nt := "(((,x . #t) (,y . #f)))" WRONG!
+	want := "(((,y . #f)))"
 	if got != want {
 		t.Fatalf("got %v != want %v", got, want)
 	}

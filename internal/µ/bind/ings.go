@@ -56,12 +56,12 @@ func (bind *Ings) IsBound(v V) (isBound bool) {
 	return
 }
 
-// Subs returns the expression to which v is bound, if any.
+// Bound returns the expression to which v is bound, if any.
 //
-// This expression shall substitute the variable,
-// which shall thus become substituted by its value.
-func (bind *Ings) Subs(v V) (x X, hasSubs bool) {
-	x, hasSubs = bind.bound[v]
+// This expression shall substitute the variable - so to say,
+// which shall thus become substituted by this eXpression, its 'value' - so to say.
+func (bind *Ings) Bound(v V) (value X, isBound bool) {
+	value, isBound = bind.bound[v]
 	return
 }
 
@@ -78,17 +78,14 @@ func (bind *Ings) Resolve(x X) X {
 
 // Walk ... some call it `walkstar` or `walk*`
 func (bind *Ings) Walk(x X) X {
-	xx := bind.Resolve(x)
-	if xx.IsVariable() {
-		return xx
-	}
-	if xx.IsPair() {
+	x = bind.Resolve(x)
+	if x.IsPair() {
 		return cons(
-			bind.Walk(xx.Pair.Car),
-			bind.Walk(xx.Pair.Cdr),
+			bind.Walk(x.Pair.Car),
+			bind.Walk(x.Pair.Cdr),
 		)
 	}
-	return xx
+	return x
 }
 
 // Occurs reports whether v occurs in x.

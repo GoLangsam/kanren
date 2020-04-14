@@ -128,6 +128,8 @@ This (indirect) self-reference is almost magical - and very important.
 
 In the literature we meet a lot of overloaded terminology here and we need to take great care in order to avoid confusion.
 
+[Constraint programming](https://en.wikipedia.org/wiki/Constraint_programming/) calls it: _Assignment_ or _assignation_ (or _model_). 
+
 #### bind V<->X
 
 How to bind a Variable and/with/to some eXpression?
@@ -159,13 +161,20 @@ Every occurrence of the _Variable_ (being bound) shall be replaced/substituted b
 
 Thus, we may need to _Walk_ the _eXpression_, and replace any occurrence of the _Variable_.
 
-`b.Subst(v V, x X) X` does this, and returns the resulting _eXpression_. 
-
 ### `bind.Ings`
 ```go
-b.LookUp( V ) -> ( t T, found bool )
-b.Walk  ( V )
+b.Bind( V, X )
+b.Bound( V )     -> ( value X, isBound bool )
+b.IsBound( V )   -> ( isBound bool )
+
+b.Resolve( X )   -> X
+b.Walk( X )      -> X
+
+b.Occurs( V, X ) -> bool
+
+b.Unify(x, y X ) -> bool 
 ```
+
 #### Representations:
 
 - triangular

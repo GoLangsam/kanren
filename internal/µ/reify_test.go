@@ -39,7 +39,7 @@ func TestReify(t *testing.T) {
 		t.Fatalf("expected list")
 	}
 
-	ss := EmptyState()
+	ss := NewS()
 	x := ss.Fresh("x")
 	y := ss.Fresh("y")
 	w := ss.Fresh("w")

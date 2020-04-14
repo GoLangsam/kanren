@@ -24,7 +24,7 @@ func TestEqual(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			stream := Equal(uexpr, vexpr)(EmptyState())
+			stream := Equal(uexpr, vexpr)(NewS())
 			got := stream.String()
 			if got != want {
 				t.Fatalf("got %s want %s", got, want)
@@ -34,20 +34,20 @@ func TestEqual(t *testing.T) {
 }
 
 func TestFailure(t *testing.T) {
-	if got, want := Failure()(EmptyState()).String(), "()"; got != want {
+	if got, want := Failure()(NewS()).String(), "()"; got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}
 }
 
 func TestSuccess(t *testing.T) {
-	if got, want := Success()(EmptyState()).String(), "(())"; got != want {
+	if got, want := Success()(NewS()).String(), "(())"; got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}
 }
 
 /*
 func TestNever(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	n := Never()(e)
 	s, sok := n.Head()
 	if s != nil {
@@ -60,7 +60,7 @@ func TestNever(t *testing.T) {
 */
 
 func TestDisjointO(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 
 	d := Disjoint(
@@ -83,7 +83,7 @@ func TestDisjointO(t *testing.T) {
 }
 
 func TestDisjoint2(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 
 	d := Disjoint(
@@ -112,7 +112,7 @@ func TestDisjoint2(t *testing.T) {
 
 /*
 func TestAlways(t *testing.T) {
-	a := Always()(EmptyState())
+	a := Always()(NewS())
 	s, sok := a.Head()
 	got := s.String()
 	want := "(())"
@@ -128,7 +128,7 @@ func TestAlways(t *testing.T) {
 
 /* TODO: ap
 func TestRunGoalAlways3(t *testing.T) {
-	ss := Always()(EmptyState())
+	ss := Always()(NewS())
 	if len(ss) != 3 {
 		t.Fatalf("expected 3 got %d", len(ss))
 	}
@@ -144,7 +144,7 @@ func TestRunGoalAlways3(t *testing.T) {
 */
 
 func TestRunGoalDisj2(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 
 	e1 := Equal(
@@ -167,7 +167,7 @@ func TestRunGoalDisj2(t *testing.T) {
 }
 
 func TestRunGoalConj2NoResults(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 
 	e1 := Equal(
@@ -190,7 +190,7 @@ func TestRunGoalConj2NoResults(t *testing.T) {
 }
 
 func TestRunGoalConj2OneResults(t *testing.T) {
-	e := EmptyState()
+	e := NewS()
 	x := e.Fresh("x")
 
 	e1 := Equal(

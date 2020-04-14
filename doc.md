@@ -2,7 +2,7 @@
 				
 -------------------------------------------------------------------------------
 ## go doc .  Goal		
-type Goal = µ.Goal
+type Goal func(S) StreamOfStates
 
 func Always() Goal
 func Any(g Goal) Goal
@@ -12,6 +12,7 @@ func Car(list, head X) Goal
 func Conjunction(gs ...Goal) Goal
 func Cons(car, cdr, pair X) Goal
 func Disjoint(gs ...Goal) Goal
+func EitherOr(THIS, THAT Goal) Goal
 func Equal(x, y X) Goal
 func Failure() Goal
 func IfThenElse(IF, THEN, ELSE Goal) Goal
@@ -29,9 +30,9 @@ Package kanren implements relational symbolic logic
 VARIABLES
 
 var (
-	Unit       = µ.Unit
-	Zero       = µ.Zero
-	EmptyState = µ.EmptyState
+	NewS = µ.NewS // only used in test programs
+	Unit = µ.Unit
+	Zero = µ.Zero
 )
 var Fail = Failure
     Fail is an alias for Failure.
@@ -39,7 +40,7 @@ var Fail = Failure
 
 TYPES
 
-type Goal = µ.Goal
+type Goal func(S) StreamOfStates
 
 func Always() Goal
     Always is a goal that always returns a never ending stream of success.
@@ -74,6 +75,10 @@ func Cons(car, cdr, pair X) Goal
 func Disjoint(gs ...Goal) Goal
     Disjoint is a goal that returns a logical OR of the input goals.
 
+func EitherOr(THIS, THAT Goal) Goal
+    EitherOr is a goal that behaves like the THIS Goal unless THIS fails, when
+    it behaves like the THAT Goal.
+
 func Equal(x, y X) Goal
     Equal is a relation: it reports whether x unifies with y.
 
@@ -83,8 +88,9 @@ func Failure() Goal
     Failure is a goal that always returns an empty stream of states.
 
 func IfThenElse(IF, THEN, ELSE Goal) Goal
-    IfThenElse is a goal that evaluates the THEN goal if the IF goal is
-    successful, otherwise it evaluates the ELSE goal.
+    IfThenElse is a goal that upon evaluation probes the IF goal and, using a
+    clone of the state, evaluates the THEN goal, if IF evaluates successful and
+    evaluates the ELSE goal otherwise.
 
 func Never() Goal
     Never is a Goal that returns a never ending evaluation of itself.
@@ -105,8 +111,6 @@ func Success() Goal
 type S = µ.S
 
 type StreamOfStates = µ.StreamOfStates
-
-type V = µ.V
 
 type X = µ.X
 

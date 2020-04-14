@@ -39,7 +39,7 @@ func ExampleIngs_Unify_yes() {
 	b.Drop(y)
 
 	fmt.Println(b.Unify(x, z))
-	yX, ok := b.Subs(y)
+	yX, ok := b.Bound(y)
 	fmt.Println("y came back:", yX, ok)
 
 	b.Drop(y)

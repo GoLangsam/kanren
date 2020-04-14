@@ -14,13 +14,13 @@ type Ings struct {
 
 func New() *Ings
 func (bind *Ings) Bind(v V, x X) *Ings
+func (bind *Ings) Bound(v V) (value X, isBound bool)
 func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) IsBound(v V) (isBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
 func (bind *Ings) Resolve(x X) X
 func (bind *Ings) String() string
-func (bind *Ings) Subs(v V) (x X, hasSubs bool)
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
 				
@@ -38,13 +38,13 @@ type Ings struct {
 
 func New() *Ings
 func (bind *Ings) Bind(v V, x X) *Ings
+func (bind *Ings) Bound(v V) (value X, isBound bool)
 func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) IsBound(v V) (isBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
 func (bind *Ings) Resolve(x X) X
 func (bind *Ings) String() string
-func (bind *Ings) Subs(v V) (x X, hasSubs bool)
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
 func (bind *Ings) exts(v V, x X) bool
@@ -77,6 +77,12 @@ func (bind *Ings) Bind(v V, x X) *Ings
 
     Note: Bind does not avoid circular bindings. Use Occurs to check beforehand.
 
+func (bind *Ings) Bound(v V) (value X, isBound bool)
+    Bound returns the expression to which v is bound, if any.
+
+    This expression shall substitute the variable - so to say, which shall thus
+    become substituted by this eXpression, its 'value' - so to say.
+
 func (bind *Ings) Clone() *Ings
 func (bind *Ings) Drop(v V) (x X, wasBound bool)
     Drop makes v unbound, reports whether v was bound, and returns the
@@ -93,12 +99,6 @@ func (bind *Ings) Resolve(x X) X
     eXpression or down to the first unbound eXpression
 
 func (bind *Ings) String() string
-func (bind *Ings) Subs(v V) (x X, hasSubs bool)
-    Subs returns the expression to which v is bound, if any.
-
-    This expression shall substitute the variable, which shall thus become
-    substituted by its value.
-
 func (bind *Ings) Unify(x, y X) bool
     Unify extends the bind.Ings with zero or more associations in an attempt to
     see whether the given eXpressions are equal and reports its success.

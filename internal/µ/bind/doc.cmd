@@ -1,3 +1,4 @@
+@Echo Off
 
 echo // go doc put to good use	 >doc.md
 echo.				>>doc.md
