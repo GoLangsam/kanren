@@ -2,7 +2,8 @@ package pipe
 
 import "strings"
 
-// Strings blocks until stream is closed,
+// String blocks until stream is closed,
+// consumes the stream
 // and returns its strings representation.
 func (s StreamOfStates) String() string {
 	if s == nil {
@@ -14,6 +15,7 @@ func (s StreamOfStates) String() string {
 	for e := range s {
 		b.WriteString(e.String())
 	}
+	s.Drop()
 	b.WriteString(")")
 	return b.String()
 }
