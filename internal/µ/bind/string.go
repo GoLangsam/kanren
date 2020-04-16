@@ -12,3 +12,14 @@ func (bind *Ings) String() string {
 
 	return newList(ss...).String()
 }
+
+/*
+	var out bytes.Buffer
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+
+	return out.String()
+
+*/

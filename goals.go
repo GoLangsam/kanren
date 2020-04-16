@@ -1,7 +1,7 @@
 package kanren
 
 // Fail is an alias for Failure.
-var Fail = Failure
+var Fail = Failure()
 
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {
@@ -36,16 +36,6 @@ func Always() Goal {
 		return Disjoint(
 			Success(),
 			Always(),
-		)(s)
-	}
-}
-
-// Any is a goal that keeps returning g forever.
-func Any(g Goal) Goal {
-	return func(s S) StreamOfStates {
-		return Disjoint(
-			g,
-			Any(g),
 		)(s)
 	}
 }

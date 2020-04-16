@@ -5,21 +5,20 @@
 type Ings struct {
 	// Has unexported fields.
 }
-    Ings represents bindings (or "substitutions"): any logic variable may be
-    bound to some symbolic expression representing its current value.
+    Ings represents bindings (or "substitutions" or ""): any logic variable may
+    be bound to some symbolic expression representing its current value.
 
     Use as `bind.Ings` (pun intended).
 
     The zero value is not useful - initialize with `bind.New()`.
 
 func New() *Ings
-func (bind *Ings) Bind(v V, x X) *Ings
-func (bind *Ings) Bound(v V) (value X, isBound bool)
+func (bound Ings) Bind(v V, x X)
+func (bound Ings) Bound(v V) (value X, isBound bool)
 func (bind *Ings) Clone() *Ings
-func (bind *Ings) Drop(v V) (x X, wasBound bool)
-func (bind *Ings) IsBound(v V) (isBound bool)
+func (bound Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
-func (bind *Ings) Resolve(x X) X
+func (bind *Ings) Resolve(v X) X
 func (bind *Ings) String() string
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
@@ -27,23 +26,22 @@ func (bind *Ings) Walk(x X) X
 -------------------------------------------------------------------------------
 ## go doc -u Ings		
 type Ings struct {
-	bound map[V]X
+	bound
 }
-    Ings represents bindings (or "substitutions"): any logic variable may be
-    bound to some symbolic expression representing its current value.
+    Ings represents bindings (or "substitutions" or ""): any logic variable may
+    be bound to some symbolic expression representing its current value.
 
     Use as `bind.Ings` (pun intended).
 
     The zero value is not useful - initialize with `bind.New()`.
 
 func New() *Ings
-func (bind *Ings) Bind(v V, x X) *Ings
-func (bind *Ings) Bound(v V) (value X, isBound bool)
+func (bound Ings) Bind(v V, x X)
+func (bound Ings) Bound(v V) (value X, isBound bool)
 func (bind *Ings) Clone() *Ings
-func (bind *Ings) Drop(v V) (x X, wasBound bool)
-func (bind *Ings) IsBound(v V) (isBound bool)
+func (bound Ings) Drop(v V) (x X, wasBound bool)
 func (bind *Ings) Occurs(v V, x X) bool
-func (bind *Ings) Resolve(x X) X
+func (bind *Ings) Resolve(v X) X
 func (bind *Ings) String() string
 func (bind *Ings) Unify(x, y X) bool
 func (bind *Ings) Walk(x X) X
@@ -59,8 +57,8 @@ TYPES
 type Ings struct {
 	// Has unexported fields.
 }
-    Ings represents bindings (or "substitutions"): any logic variable may be
-    bound to some symbolic expression representing its current value.
+    Ings represents bindings (or "substitutions" or ""): any logic variable may
+    be bound to some symbolic expression representing its current value.
 
     Use as `bind.Ings` (pun intended).
 
@@ -69,34 +67,32 @@ type Ings struct {
 func New() *Ings
     New creates fresh and empty mapping of/for bind.Ings and returns a pointer.
 
-func (bind *Ings) Bind(v V, x X) *Ings
+func (bound Ings) Bind(v V, x X)
     Bind binds x to v, so v is bound to x. Thus, (v . x) resembles a
     substitution pair.
 
     Bind is a noOp if v or x are nil or v is not a Variable.
 
-    Note: Bind does not avoid circular bindings. Use Occurs to check beforehand.
+    Note: Bind does not attempt to avoid circular bindings. Use Occurs to check
+    beforehand.
 
-func (bind *Ings) Bound(v V) (value X, isBound bool)
+func (bound Ings) Bound(v V) (value X, isBound bool)
     Bound returns the expression to which v is bound, if any.
 
     This expression shall substitute the variable - so to say, which shall thus
     become substituted by this eXpression, its 'value' - so to say.
 
 func (bind *Ings) Clone() *Ings
-func (bind *Ings) Drop(v V) (x X, wasBound bool)
+func (bound Ings) Drop(v V) (x X, wasBound bool)
     Drop makes v unbound, reports whether v was bound, and returns the
     expression (if any) v was previously bound with.
-
-func (bind *Ings) IsBound(v V) (isBound bool)
-    IsBound reports whether v is bound or not
 
 func (bind *Ings) Occurs(v V, x X) bool
     Occurs reports whether v occurs in x.
 
-func (bind *Ings) Resolve(x X) X
-    Resolve the eXpression along the bindings down to the first non-Variable
-    eXpression or down to the first unbound eXpression
+func (bind *Ings) Resolve(v X) X
+    Resolve the eXpression by chasing along the bindings recurring down to the
+    first non-Variable eXpression or down to the first unbound eXpression
 
 func (bind *Ings) String() string
 func (bind *Ings) Unify(x, y X) bool

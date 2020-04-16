@@ -12,12 +12,15 @@ type X = µ.X
 
 //type V = µ.V
 
-type Goal func(S) StreamOfStates
+type Goal = µ.Goal // func(S) StreamOfStates
 
 type S = µ.S
 type StreamOfStates = µ.StreamOfStates
 
 var (
+	FAIL = µ.Failure() // FAIL represents Failure.
+	GOAL = µ.Success() // GOAL represents Success.
+
 	NewS = µ.NewS // only used in test programs
 	Unit = µ.Unit
 	Zero = µ.Zero

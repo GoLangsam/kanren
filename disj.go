@@ -10,8 +10,5 @@ func Disjoint(gs ...Goal) Goal {
 	}
 	g := gs[0]
 	h := Disjoint(gs[1:]...)
-	return func(s S) StreamOfStates {
-		sc := s.Clone() // we Clone S before we evaluate g
-		return g(s).Plus(h(sc))
-	}
+	return g.Or(h)
 }

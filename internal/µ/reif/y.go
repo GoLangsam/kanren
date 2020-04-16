@@ -25,21 +25,18 @@ func Ier() *Y {
 	}
 }
 
-// Clone provides a clone of b.
-// TODO: This is bullshit
+// Clone provides a clone of y.
 func (y *Y) Clone() *Y {
 	return &Y{
-		Able: y.Able,
-		Ings: y.Ings.Clone(),
-	}
-}
-
-func (y *Y) BindFresh(u V) *Y {
-	yy := &Y{
 		Able:  y.Able,
 		Ings:  y.Ings.Clone(),
 		count: y.count,
 	}
+}
+
+func (y *Y) BindFresh(u V) *Y {
+	yy := y.Clone()
+
 	v := yy.Fresh(yy.nextName())
 	yy.Bind(u, v)
 	return yy

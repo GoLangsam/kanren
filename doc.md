@@ -2,10 +2,17 @@
 				
 -------------------------------------------------------------------------------
 ## go doc .  Goal		
-type Goal func(S) StreamOfStates
+var (
+	FAIL = µ.Failure() // FAIL represents Failure.
+	GOAL = µ.Success() // GOAL represents Success.
+
+	NewS = µ.NewS // only used in test programs
+	Unit = µ.Unit
+	Zero = µ.Zero
+)
+type Goal = µ.Goal // func(S) StreamOfStates
 
 func Always() Goal
-func Any(g Goal) Goal
 func Append(l, t, out X) Goal
 func CallFresh(f func(X) Goal) Goal
 func Car(list, head X) Goal
@@ -30,25 +37,25 @@ Package kanren implements relational symbolic logic
 VARIABLES
 
 var (
+	FAIL = µ.Failure() // FAIL represents Failure.
+	GOAL = µ.Success() // GOAL represents Success.
+
 	NewS = µ.NewS // only used in test programs
 	Unit = µ.Unit
 	Zero = µ.Zero
 )
-var Fail = Failure
+var Fail = Failure()
     Fail is an alias for Failure.
 
 
 TYPES
 
-type Goal func(S) StreamOfStates
+type Goal = µ.Goal // func(S) StreamOfStates
 
 func Always() Goal
     Always is a goal that always returns a never ending stream of success.
 
     Note: This is a joke. Use on Your own risk!
-
-func Any(g Goal) Goal
-    Any is a goal that keeps returning g forever.
 
 func Append(l, t, out X) Goal
     Append is the relation: append(l, t) == out.

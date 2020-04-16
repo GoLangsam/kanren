@@ -10,7 +10,5 @@ func Conjunction(gs ...Goal) Goal {
 	}
 	g := gs[0]
 	h := Conjunction(gs[1:]...)
-	return func(s S) StreamOfStates {
-		return g(s).Bind(h)
-	}
+	return g.And(h)
 }

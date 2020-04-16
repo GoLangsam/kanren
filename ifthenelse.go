@@ -5,23 +5,11 @@ package kanren
 // if IF evaluates successful
 // and evaluates the ELSE goal otherwise.
 func IfThenElse(IF, THEN, ELSE Goal) Goal {
-	return func(s S) StreamOfStates {
-		sc := s.Clone()
-		IFs := IF(s)
-		head, ok := IFs.Head()
-		IFs.Drop()
-
-		if ok && head != nil {
-			return THEN(sc) // then
-		} else {
-			return ELSE(sc) // else
-		}
-	}
+	return IF.IfThenElse(THEN, ELSE)
 }
 
 // EitherOr is a goal that behaves like the THIS Goal
 // unless THIS fails, when it behaves like the THAT Goal.
 func EitherOr(THIS, THAT Goal) Goal {
-	return IfThenElse(THIS, THIS, THAT)
-
+	return THIS.EitherOr(THAT)
 }

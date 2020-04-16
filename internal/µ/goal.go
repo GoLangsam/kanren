@@ -2,11 +2,27 @@ package µ
 
 type Goal func(S) StreamOfStates
 
+// Failure is a goal that always returns an empty stream of states.
+func Failure() Goal {
+	return func(s S) StreamOfStates {
+		return Zero()
+	}
+}
+
+// Success is a goal that always returns the input state in the resulting stream of states.
+func Success() Goal {
+	return func(s S) StreamOfStates {
+		return Unit(s)
+	}
+}
+
+// =============================================================================
+
 // Or is a goal that returns a logical OR of the goals.
 //
 // The implementation returns a non-deterministic
 // interleave of the individual result streams;
-// such search style is a trademark of µKanren.
+// such search style is a characteristic of µKanren.
 func (g Goal) Or(h Goal) Goal {
 	return func(s S) StreamOfStates {
 		sc := s.Clone() // we Clone S before we evaluate g
