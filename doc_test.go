@@ -1,10 +1,13 @@
 package kanren
 
 import (
+	"github.com/GoLangsam/kanren/internal/µ"
 	"github.com/GoLangsam/sexpr"
 )
 
 var (
+	EmptyState = µ.EmptyState
+
 	Parse = sexpr.Parse
 
 	// NewVariable = sexpr.NewVariable must NOT be used! Use Fresh instead!

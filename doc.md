@@ -115,7 +115,5 @@ type S = µ.S
 
 type StreamOfStates = µ.StreamOfStates
 
-type V = µ.V
-
 type X = µ.X
 
