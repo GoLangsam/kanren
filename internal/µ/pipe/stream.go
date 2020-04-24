@@ -8,6 +8,8 @@ func Zero() StreamOfStates {
 	return zero
 }
 
+var ZERO StreamOfStates = Zero()
+
 func (s StreamOfStates) Head() (a S, ok bool) {
 	a, ok = <-s
 	return

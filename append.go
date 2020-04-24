@@ -1,7 +1,7 @@
 package kanren
 
-// Append is the relation: append(l, t) == out.
-func Append(l, t, out X) Goal {
+// AppendAWS is the relation: append(l, t) == out.
+func AppendAWS(l, t, out X) Goal {
 	return func(s S) StreamOfStates {
 		return Disjoint(
 			Conjunction(
@@ -14,10 +14,29 @@ func Append(l, t, out X) Goal {
 						return Conjunction(
 							Cons(a, d, l),
 							Cons(a, res, out),
-							Append(d, t, res),
+							AppendAWS(d, t, res),
 						)
 					})
 				})
+			}),
+		)(s)
+	}
+}
+
+// Append is the relation: append(aHead, aTail) == aList.
+func Append(aHead, aTail, aList X) Goal {
+	return func(s S) StreamOfStates {
+		return Disjoint(
+			Conjunction(
+				Null(aHead),
+				Equal(aTail, aList),
+			),
+			Fresh3(func(µHead, µTail, µList X) Goal {
+				return Conjunction(
+					Cons(µHead, µTail, aHead),
+					Cons(µHead, µList, aList),
+					Append(µTail, aTail, µList),
+				)
 			}),
 		)(s)
 	}

@@ -6,8 +6,8 @@ package kanren
 func Equal(x, y X) Goal {
 	return func(s S) StreamOfStates {
 		if s.Unify(x, y) {
-			return Unit(s) // TODO: .Clone()) ?
+			return Unit(s)
 		}
-		return Zero()
+		return ZERO
 	}
 }

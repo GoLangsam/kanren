@@ -21,3 +21,5 @@ func (s StreamOfStates) Bind(g func(S) StreamOfStates) StreamOfStates {
 	go s.bind(cha, g)
 	return cha
 }
+
+// TODO: pipe/s knows only about ...PipeFunc( ..., acts ...func(a anyThing) anyThing)

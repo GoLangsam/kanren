@@ -17,7 +17,7 @@ func TestOnce(t *testing.T) {
 		Equal(NewSymbol("#f"), y),
 		Equal(NewSymbol("#t"), y),
 	)
-	ss := ifte(NewS())
+	ss := ifte(e)
 	got := ss.String()
 	//nt := "(((,x . #t) (,y . #f)))" WRONG!
 	want := "(((,y . #f)))"

@@ -24,24 +24,12 @@ func TestEqual(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			stream := Equal(uexpr, vexpr)(NewS())
+			stream := Equal(uexpr, vexpr).Try()
 			got := stream.String()
 			if got != want {
 				t.Fatalf("got %s want %s", got, want)
 			}
 		})
-	}
-}
-
-func TestFailure(t *testing.T) {
-	if got, want := Failure()(NewS()).String(), "()"; got != want {
-		t.Fatalf("got %s != want %s", got, want)
-	}
-}
-
-func TestSuccess(t *testing.T) {
-	if got, want := Success()(NewS()).String(), "(())"; got != want {
-		t.Fatalf("got %s != want %s", got, want)
 	}
 }
 
@@ -68,7 +56,7 @@ func TestDisjointO(t *testing.T) {
 			NewSymbol("olive"),
 			x,
 		),
-		Failure(),
+		FAIL,
 	)(e)
 	s, sok := d.Head()
 	got := s.String()
@@ -87,7 +75,7 @@ func TestDisjoint2(t *testing.T) {
 	x := e.Fresh("x")
 
 	d := Disjoint(
-		Failure(),
+		FAIL,
 		Equal(
 			NewSymbol("olive"),
 			x,

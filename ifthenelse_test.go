@@ -9,7 +9,7 @@ func TestIfThenElseSuccess(t *testing.T) {
 	y := s.Fresh("y")
 
 	ifte := IfThenElse(
-		Success(),
+		GOAL,
 		Equal(NewSymbol("#f"), y),
 		Equal(NewSymbol("#t"), y),
 	)
@@ -26,7 +26,7 @@ func TestIfThenElseFailure(t *testing.T) {
 	y := s.Fresh("y")
 
 	ifte := IfThenElse(
-		Failure(),
+		FAIL,
 		Equal(NewSymbol("#f"), y),
 		Equal(NewSymbol("#t"), y),
 	)
