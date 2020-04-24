@@ -4,6 +4,17 @@ package reif
 import "github.com/GoLangsam/kanren/internal/µ/bind"
 import "github.com/GoLangsam/kanren/internal/µ/vari"
 
+// Ings documents the behaviour required from bind.Ings.
+type Ings interface {
+	Clone() bind.Ings
+	String() string
+
+	Bind(V, X)
+	Walk(X) X
+}
+
+var _ Ings = bind.New() // assert wellbehaviour
+
 // Y extends vari.Ables and their bind.Ings
 // with Reify,
 // which needs the ability to construct fresh variables on-the-fly.
@@ -12,29 +23,30 @@ import "github.com/GoLangsam/kanren/internal/µ/vari"
 //
 // The zero value is not useful - initialize with `reif.Ier()`.
 type Y struct {
-	*vari.Able     // known variables
-	*bind.Ings     // their current bindings
-	count      int // used to create anonymus variables during reify
+	*vari.Able // known variables
+	// Ings       // their current bindings
+	bind.Ings     // their current bindings
+	count     int // used to create anonymus variables during reify
 }
 
 // Ier creates fresh and empty reifier.
-func Ier() *Y {
-	return &Y{
+func Ier() Y {
+	return Y{
 		Able: vari.Ables(),
 		Ings: bind.New(),
 	}
 }
 
 // Clone provides a clone of y.
-func (y *Y) Clone() *Y {
-	return &Y{
+func (y Y) Clone() Y {
+	return Y{
 		Able:  y.Able,
 		Ings:  y.Ings.Clone(),
 		count: y.count,
 	}
 }
 
-func (y *Y) BindFresh(u V) *Y {
+func (y Y) BindFresh(u V) Y {
 	yy := y.Clone()
 
 	v := yy.Fresh(yy.nextName())
@@ -43,7 +55,7 @@ func (y *Y) BindFresh(u V) *Y {
 }
 
 // Reify ...
-func (y *Y) Reify(x X) *Y {
+func (y Y) Reify(x X) Y {
 	s := y
 	x = s.Walk(x)
 	switch {

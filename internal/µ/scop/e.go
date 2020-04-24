@@ -9,30 +9,30 @@ import "github.com/GoLangsam/kanren/internal/µ/bind"
 //
 // The zero value is not useful - initialize with `scop.Es()`.
 type E struct {
-	outer      *E // outer environment
-	*bind.Ings    // current bindings
+	outer     *E // outer environment
+	bind.Ings    // current bindings
 }
 
 // Es creates fresh and empty scop.Es (pun intended).
-func Es() *E {
-	return &E{
+func Es() E {
+	return E{
 		// outer: nil,
 		Ings: bind.New(),
 	}
 }
 
 // Extend provides an empty environment below the current one.
-func (e *E) Extend() *E {
-	return &E{
+func (e *E) Extend() E {
+	return E{
 		outer: e,
 		Ings:  bind.New(),
 	}
 }
 
-func (e *E) Bound(v V) (value X, isBound bool) {
-	value, isBound = e.Bound(v)
+func (e *E) Load(v V) (value X, isBound bool) {
+	value, isBound = e.Ings.Load(v.Expr())
 	if !isBound && e.outer != nil {
-		value, isBound = e.outer.Bound(v)
+		value, isBound = e.outer.Load(v)
 	}
 	return
 }

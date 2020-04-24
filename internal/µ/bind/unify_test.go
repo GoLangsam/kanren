@@ -36,14 +36,14 @@ func ExampleIngs_Unify_yes() {
 
 	fmt.Println(b.Unify(x, z))
 
-	b.Drop(y)
+	b.Delete(y)
 
 	fmt.Println(b.Unify(x, z))
-	yX, ok := b.Bound(y)
+	yX, ok := b.Load(y)
 	fmt.Println("y came back:", yX, ok)
 
-	b.Drop(y)
-	b.Drop(x)
+	b.Delete(y)
+	b.Delete(x)
 	fmt.Println(b)
 
 	// Output:
@@ -68,7 +68,7 @@ func ExampleIngs_Unify_false() {
 	// ((,x . 4)(,y . 5))
 	fmt.Println(b.Unify(x, y))
 
-	b.Drop(y)
+	b.Delete(y)
 	fmt.Println(b)
 
 	// Output:

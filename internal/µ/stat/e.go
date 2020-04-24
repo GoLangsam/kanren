@@ -11,7 +11,7 @@ type Constraints struct{}
 // Note: the zero value is not useful.
 // Init provides an empty state.
 type E struct {
-	*reif.Y
+	reif.Y
 	Constraints
 }
 

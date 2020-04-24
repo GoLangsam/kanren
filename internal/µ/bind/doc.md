@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------
 ## go doc .  Ings		
 type Ings struct {
-	// Has unexported fields.
+	smap.SMap // SMap
 }
     Ings represents bindings (or "substitutions" or ""): any logic variable may
     be bound to some symbolic expression representing its current value.
@@ -12,21 +12,20 @@ type Ings struct {
 
     The zero value is not useful - initialize with `bind.New()`.
 
-func New() *Ings
-func (bound Ings) Bind(v V, x X)
-func (bound Ings) Bound(v V) (value X, isBound bool)
-func (bind *Ings) Clone() *Ings
-func (bound Ings) Drop(v V) (x X, wasBound bool)
-func (bind *Ings) Occurs(v V, x X) bool
-func (bind *Ings) Resolve(v X) X
-func (bind *Ings) String() string
-func (bind *Ings) Unify(x, y X) bool
-func (bind *Ings) Walk(x X) X
+func New() Ings
+func (bind Ings) Bind(v V, x X)
+func (bind Ings) Clone() Ings
+func (bind Ings) Occurs(v V, x X) bool
+func (bind Ings) Resolve(v X) X
+func (bind Ings) SafeBind(v V, x X) bool
+func (bind Ings) String() string
+func (bind Ings) Unify(x, y X) bool
+func (bind Ings) Walk(x X) X
 				
 -------------------------------------------------------------------------------
 ## go doc -u Ings		
 type Ings struct {
-	bound
+	smap.SMap // SMap
 }
     Ings represents bindings (or "substitutions" or ""): any logic variable may
     be bound to some symbolic expression representing its current value.
@@ -35,17 +34,15 @@ type Ings struct {
 
     The zero value is not useful - initialize with `bind.New()`.
 
-func New() *Ings
-func (bound Ings) Bind(v V, x X)
-func (bound Ings) Bound(v V) (value X, isBound bool)
-func (bind *Ings) Clone() *Ings
-func (bound Ings) Drop(v V) (x X, wasBound bool)
-func (bind *Ings) Occurs(v V, x X) bool
-func (bind *Ings) Resolve(v X) X
-func (bind *Ings) String() string
-func (bind *Ings) Unify(x, y X) bool
-func (bind *Ings) Walk(x X) X
-func (bind *Ings) exts(v V, x X) bool
+func New() Ings
+func (bind Ings) Bind(v V, x X)
+func (bind Ings) Clone() Ings
+func (bind Ings) Occurs(v V, x X) bool
+func (bind Ings) Resolve(v X) X
+func (bind Ings) SafeBind(v V, x X) bool
+func (bind Ings) String() string
+func (bind Ings) Unify(x, y X) bool
+func (bind Ings) Walk(x X) X
 				
 -------------------------------------------------------------------------------
 ## go doc -all		
@@ -55,7 +52,7 @@ package bind // import "github.com/GoLangsam/kanren/internal/µ/bind"
 TYPES
 
 type Ings struct {
-	// Has unexported fields.
+	smap.SMap // SMap
 }
     Ings represents bindings (or "substitutions" or ""): any logic variable may
     be bound to some symbolic expression representing its current value.
@@ -64,10 +61,10 @@ type Ings struct {
 
     The zero value is not useful - initialize with `bind.New()`.
 
-func New() *Ings
+func New() Ings
     New creates fresh and empty mapping of/for bind.Ings and returns a pointer.
 
-func (bound Ings) Bind(v V, x X)
+func (bind Ings) Bind(v V, x X)
     Bind binds x to v, so v is bound to x. Thus, (v . x) resembles a
     substitution pair.
 
@@ -76,32 +73,41 @@ func (bound Ings) Bind(v V, x X)
     Note: Bind does not attempt to avoid circular bindings. Use Occurs to check
     beforehand.
 
-func (bound Ings) Bound(v V) (value X, isBound bool)
-    Bound returns the expression to which v is bound, if any.
+func (bind Ings) Clone() Ings
+    Clone returns a shallow copy.
 
-    This expression shall substitute the variable - so to say, which shall thus
-    become substituted by this eXpression, its 'value' - so to say.
-
-func (bind *Ings) Clone() *Ings
-func (bound Ings) Drop(v V) (x X, wasBound bool)
-    Drop makes v unbound, reports whether v was bound, and returns the
-    expression (if any) v was previously bound with.
-
-func (bind *Ings) Occurs(v V, x X) bool
+func (bind Ings) Occurs(v V, x X) bool
     Occurs reports whether v occurs in x.
 
-func (bind *Ings) Resolve(v X) X
+func (bind Ings) Resolve(v X) X
     Resolve the eXpression by chasing along the bindings recurring down to the
     first non-Variable eXpression or down to the first unbound eXpression
 
-func (bind *Ings) String() string
-func (bind *Ings) Unify(x, y X) bool
+func (bind Ings) SafeBind(v V, x X) bool
+    exts attempts to bind v with x and fails if such bind would introduce a
+    circle due to v occurs in x.
+
+func (bind Ings) String() string
+    String returns a string of the symbolic map sorted by key.
+
+func (bind Ings) Unify(x, y X) bool
     Unify extends the bind.Ings with zero or more associations in an attempt to
     see whether the given eXpressions are equal and reports its success.
     Circular bindings imply failure (ok = false).
 
-func (bind *Ings) Walk(x X) X
+func (bind Ings) Walk(x X) X
     Walk ... some call it `walkstar` or `walk*`
+
+type SMap interface {
+	Clone() smap.SMap
+	String() string
+
+	Load(V) (X, bool)
+	Store(V, X)
+
+	Delete(X) // only for tests - TODO: remove
+}
+    SMap documents the behaviour required from a substitution map.
 
 type V = X // *sexpr.Variable
     V is an eXpression which represents a logic variable

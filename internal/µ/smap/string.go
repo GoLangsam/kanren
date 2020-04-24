@@ -1,11 +1,12 @@
-package bind
+package smap
 
 import "sort"
 
-func (bind *Ings) String() string {
-	ss := make([]X, 0, len(bind.bound))
+// String returns a string of the symbolic map sorted by key.
+func (m SMap) String() string {
+	ss := make([]X, 0, len(m))
 
-	for k, x := range bind.bound {
+	for k, x := range m {
 		ss = append(ss, cons(k, x))
 	}
 	sort.Slice(ss, func(i, j int) bool { return (ss[i].Car().String() < ss[j].Car().String()) })

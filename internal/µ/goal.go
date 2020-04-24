@@ -2,6 +2,11 @@ package µ
 
 type Goal func(S) StreamOfStates
 
+// Try evaluates the Goal with an empty state.
+func (g Goal) Try() StreamOfStates {
+	return g(NewS())
+}
+
 // Failure is a goal that always returns an empty stream of states.
 func Failure() Goal {
 	return func(s S) StreamOfStates {
@@ -21,7 +26,7 @@ func Success() Goal {
 // Or is a goal that returns a logical OR of the goals.
 //
 // The implementation returns a non-deterministic
-// interleave of the individual result streams;
+// interleave of the result streams;
 // such search style is a characteristic of µKanren.
 func (g Goal) Or(h Goal) Goal {
 	return func(s S) StreamOfStates {
@@ -33,7 +38,7 @@ func (g Goal) Or(h Goal) Goal {
 // And is a goal that returns a logical AND of the goals.
 func (g Goal) And(h Goal) Goal {
 	return func(s S) StreamOfStates {
-		return g(s).Bind(h)
+		return g(s).Bind(goal(h))
 	}
 }
 
