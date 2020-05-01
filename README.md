@@ -344,6 +344,15 @@ His blog is at http://www.catonmat.net/  --  good coders code, great reuse.
 
 **[Fairness](http://okmij.org/ftp/Computation/monads.html#fair-bt-stream)** mentions early Kanren.
 
+* [miniKanren Live and Untagged: Quine Generation via Relational Interpreters](http://webyrd.net/quines/quines.pdf)
+* [cKanren: miniKanren with Constraints](http://scheme2011.ucombinator.org/papers/Alvis2011.pdf)
+* [μKanren: A Minimal Functional Core for Relational Programming](http://webyrd.net/scheme-2013/papers/HemannMuKanren2013.pdf)
+* [Relational Programming in miniKanren: Techniques, Applications, and Implementations](https://scholarworks.iu.edu/dspace/bitstream/handle/2022/8777/Byrd_indiana_0093A_10344.pdf)
+* [Pure, Declarative, and Constructive Arithmetic Relations (Declarative Pearl)](http://okmij.org/ftp/Prolog/Arithm/arithm.pdf)
+* [From Variadic Functions to Variadic Relations - A miniKanren Perspective](http://scheme2006.cs.uchicago.edu/12-byrd.pdf)
+
+* [core.logic](https://github.com/clojure/core.logic)
+
 ## Notes todo
 
 Plenty of other miniKanren use log-time persistent maps for their substitutions; core.logic (https://github.com/clojure/core.logic) and veneer (https://github.com/tca/veneer) certainly do.
@@ -359,3 +368,89 @@ of core.logic's general constraint framework, it's unlikely we'll achieve JaCoP 
 Thus JaCoP integration is attractive.
 
 ---
+
+## miniKanren operators
+
+`eq` is the basic goal constructor: it succeeds if its arguments unify, fails otherwise.
+
+`conde` accepts two or more clauses made of lists of goals, and returns the logical disjunction of these clauses.
+
+`fresh` accepts a list of one or more logic variables, and a block containing
+one or more goals. The logic variables are bound into the lexical scope of the
+block, and the logical conjuction of the goals is performed.
+
+## Interface operators
+
+`run` is similar to `run_all`, but returns at most `n` results.
+
+`run_all` accepts a list of one or more logic variables, an optional module name for a constraint solver, and a block containing one or more goals.
+The logic variables are bound into the lexical scope of the block, and the logical conjunction of the goals is performed.
+All results of the conjunction are evaluated, and are returned in terms of the first logic variable given.
+
+
+## Impure operators
+
+ExKanren/lib/minikanren.ex
+
+### `conda`
+`conda` accepts lists of goal clauses similar to `conde`, but returns the result of at most one clause: the first clause to have its first goal succeed.
+
+```ex
+run_all([out, x, y]) do
+	conda do
+		[eq(1, 2), eq(out, "First clause")]
+		[appendo(x, y, [1, 2, 3]), eq(out, {x, "Second clause"})]
+		[eq(x, y), eq(x, 1), eq(out, {{x, y}, "Third clause"})]
+	end
+end
+
+[{[], "Second clause"}, {[1], "Second clause"}, {[1, 2], "Second clause"}, {[1, 2, 3], "Second clause"}]
+```
+
+### `condu`
+
+`condu` is similar to `conda`, but takes only a single result from the first goal of the first successful clause.
+
+### `project`
+
+`project` binds the associated value (if any) of one or more logic variables  into lexical scope and allows them to be operated on.
+
+```ex
+run_all([out, x, y]) do
+	eq(x, 3)
+	eq(y, 7)
+	project([x, y]) do
+		eq(x + y, out)
+	end
+end
+[10]
+```
+
+##   Some common relations used in miniKanren.
+
+`succeed` is a goal that always succeeds.
+`succeed` is a goal that ignores its argument and always succeeds.
+
+`fail` is a goal that always fails.
+`fail` is a goal that ignores its argument and always fails.
+
+`heado` relates `h` as the head of list `ls`.
+`tailo` relates `t` as the tail of list `ls`.
+`conso` relates `h` and `t` as the head and tail of list `ls`.
+(Equivalent to `eq([h | t], ls)`.)
+
+`membero` relates `a` as being a member of the list `ls`.
+
+`appendo` relates the list `ls` as the result of appending lists `l1` and `l2`.
+
+`emptyo` relates `a` to the empty list.
+
+## Non-relational functions
+
+`onceo` accepts a goal function, and allows it to succeed at most once.
+
+`copy_term` copies the term associated with `x` to `y`, replacing any fresh logic variables in `x` with distinct fresh variables in `y`.
+
+`is` projects its argument `b`, and associates `a` with the result of the unary operation `f.(b)`
+
+`fresho` succeeds if its argument is a fresh logic variable, fails otherwise.

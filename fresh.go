@@ -64,3 +64,10 @@ func Fresh7(f func(V, V, V, V, V, V, V) Goal) Goal {
 		return f(v1, v2, v3, v4, v5, v6, v7)(s)
 	}
 }
+
+func Fresh8(f func(V, V, V, V, V, V, V, V) Goal) Goal {
+	return func(s S) StreamOfStates {
+		v1, v2, v3, v4, v5, v6, v7, v8 := s.V(), s.V(), s.V(), s.V(), s.V(), s.V(), s.V(), s.V()
+		return f(v1, v2, v3, v4, v5, v6, v7, v8)(s)
+	}
+}

@@ -8,7 +8,7 @@ var (
 
 	NewS                = µ.NewS // only used in test programs
 	Unit                = µ.Unit
-	ZERO StreamOfStates = µ.Zero() // used by Equal-relation
+	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
 
 )
 type Goal = µ.Goal // func(S) StreamOfStates
@@ -17,6 +17,7 @@ func Append(aHead, aTail, aList X) Goal
 func AppendAWS(l, t, out X) Goal
 func CallFresh(f func(V) Goal) Goal
 func Car(list, head X) Goal
+func Cdr(list, tail X) Goal
 func Conjunction(gs ...Goal) Goal
 func Cons(car, cdr, pair X) Goal
 func Disjoint(gs ...Goal) Goal
@@ -29,6 +30,7 @@ func Fresh4(f func(V, V, V, V) Goal) Goal
 func Fresh5(f func(V, V, V, V, V) Goal) Goal
 func Fresh6(f func(V, V, V, V, V, V) Goal) Goal
 func Fresh7(f func(V, V, V, V, V, V, V) Goal) Goal
+func Fresh8(f func(V, V, V, V, V, V, V, V) Goal) Goal
 func IfThenElse(IF, THEN, ELSE Goal) Goal
 func Null(x X) Goal
 func Once(g Goal) Goal
@@ -47,7 +49,7 @@ var (
 
 	NewS                = µ.NewS // only used in test programs
 	Unit                = µ.Unit
-	ZERO StreamOfStates = µ.Zero() // used by Equal-relation
+	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
 
 )
 
@@ -74,6 +76,9 @@ func CallFresh(f func(V) Goal) Goal
 func Car(list, head X) Goal
     Car is the relation: Car(list) == head.
 
+func Cdr(list, tail X) Goal
+    Cdr is the relation: Cdr(list) == tail.
+
 func Conjunction(gs ...Goal) Goal
     Conjunction is a goal that returns a logical AND of the input goals.
 
@@ -99,6 +104,7 @@ func Fresh4(f func(V, V, V, V) Goal) Goal
 func Fresh5(f func(V, V, V, V, V) Goal) Goal
 func Fresh6(f func(V, V, V, V, V, V) Goal) Goal
 func Fresh7(f func(V, V, V, V, V, V, V) Goal) Goal
+func Fresh8(f func(V, V, V, V, V, V, V, V) Goal) Goal
 func IfThenElse(IF, THEN, ELSE Goal) Goal
     IfThenElse is a goal that upon evaluation probes the IF goal and, using a
     clone of the state, evaluates the THEN goal, if IF evaluates successful and
@@ -114,6 +120,8 @@ func Once(g Goal) Goal
 type S = µ.S
 
 type StreamOfStates = µ.StreamOfStates
+
+type V = µ.V
 
 type X = µ.X
 

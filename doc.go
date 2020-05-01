@@ -23,6 +23,6 @@ var (
 
 	NewS                = µ.NewS // only used in test programs
 	Unit                = µ.Unit
-	ZERO StreamOfStates = µ.Zero() // used by Equal-relation
+	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
 	cons                = sexpr.Cons
 )

@@ -9,8 +9,8 @@ func TestFreshKiwi(t *testing.T) {
 			fruit,
 		)
 	}
-	got := Fresh1(rel1).Try().String()
-	want := "(((,~.0 . plum)))"
+	got := CallFresh(rel1).Try().String()
+	want := "(((,_0 . plum)))"
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}

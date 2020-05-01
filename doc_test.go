@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	EmptyState = µ.EmptyState
+	EmptyState = µ.NewS
 
 	Parse = sexpr.Parse
 

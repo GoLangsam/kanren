@@ -6,10 +6,9 @@ import (
 )
 
 func TestEqual(t *testing.T) {
-	type ttt struct {
+	tests := []struct {
 		u, v, want string
-	}
-	tests := []ttt{
+	}{
 		{u: "#f", v: "#f", want: "(())"},
 		{u: "#f", v: "#t", want: "()"},
 	}
@@ -64,6 +63,8 @@ func TestDisjointO(t *testing.T) {
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}
+	_ = sok
+
 	s, sok = d.Head()
 	if sok {
 		t.Fatalf("expected never ending")
@@ -146,11 +147,12 @@ func TestRunGoalDisj2(t *testing.T) {
 	g := Disjoint(e1, e2)
 	ss := g(e)
 	l := 0
-	for _ = range ss {
+	for head, ok := ss.Head(); ok; head, ok = ss.Head() {
+		_ = head
 		l++
 	}
 	if l != 2 {
-		t.Fatalf("expected 2, got %d: %v", l, ss)
+		t.Fatalf("expected 2, got %d", l)
 	}
 }
 
@@ -169,7 +171,7 @@ func TestRunGoalConj2NoResults(t *testing.T) {
 	g := Conjunction(e1, e2)
 	ss := g(e)
 	l := 0
-	for _ = range ss {
+	for _, ok := ss.Head(); ok; _, ok = ss.Head() {
 		l++
 	}
 	if l != 0 {
@@ -191,15 +193,15 @@ func TestRunGoalConj2OneResults(t *testing.T) {
 	)
 	g := Conjunction(e1, e2)
 	ss := g(e)
-	first := <-ss
+	first, _ := ss.Receive()
 	got := first.String()
 	want := "((,x . olive))"
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}
 	l := 0
-	for s := range ss {
+	for _, ok := ss.Head(); ok; _, ok = ss.Head() {
 		l++
-		t.Fatalf("expected none, got %d: %v", l, s)
+		t.Fatalf("expected none, got %d: %v", l, ss)
 	}
 }

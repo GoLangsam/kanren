@@ -1,7 +1,8 @@
-package reif
+package bind
 
 import (
 	"fmt"
+	//	"strings"
 	"testing"
 )
 
@@ -36,19 +37,48 @@ func TestReify(t *testing.T) {
 	if !e.IsPair() {
 		t.Fatalf("expected list")
 	}
-	fmt.Printf("%v\n", e)
-	ss := Ier()
+
+	ss := New()
 	x := ss.Fresh("x")
 	y := ss.Fresh("y")
 	w := ss.Fresh("w")
 	ss.Bind(x, e.Car().Cdr())
 	ss.Bind(y, e.Cdr().Car().Cdr())
 	ss.Bind(w, e.Cdr().Cdr().Car().Cdr())
-	fmt.Println("ss:", ss)
+
 	gote := ss.Reify(x)
 	got := fmt.Sprintf("%v", gote)
-	want := "(_0 (_1 _0) corn _2 ((ice) _2))"
+	want := "(,_0 (,_1 ,_0) corn ,_2 ((ice) ,_2))"
 	if got != want {
 		t.Fatalf("got %s != want %s", got, want)
 	}
 }
+
+/*
+func TestNoReify(t *testing.T) {
+	e1 := Equal(
+		sexpr.NewSymbol("olive"),
+		sexpr.NewVariable("x"),
+	)
+	e2 := Equal(
+		sexpr.NewSymbol("oil"),
+		sexpr.NewVariable("x"),
+	)
+	g := Disjoint(e1, e2)
+	states := RunGoal(5, g)
+	ss := make([]*sexpr.Expression, len(states))
+	strs := make([]string, len(states))
+
+	x, _ := sexpr.NewVariable("x").AsVariable()
+	r := reifyVarFromState(x)
+	for i, s := range states {
+		ss[i] = r(s)
+		strs[i] = ss[i].String()
+	}
+	got := "(" + strings.Join(strs, " ") + ")"
+	want := "(olive oil)"
+	if got != want {
+		t.Fatalf("got %s != want %s", got, want)
+	}
+}
+*/

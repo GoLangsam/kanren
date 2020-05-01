@@ -5,15 +5,19 @@ import "fmt"
 func ExampleIngs_Bind() {
 	b := New()
 
+	four := NewInt(4)
 	five := NewInt(5)
-	x := NewVariable("x")
+	x := b.Fresh("x")
 	// vx, _ := x.AsVariable()
 
-	b.Bind(x, five)
+	b.Bind(x, four)
+	fmt.Println(b)
 
+	b.Bind(x, five)
 	fmt.Println(b)
 
 	// Output:
+	// ((,x . 4))
 	// ((,x . 5))
 }
 
@@ -21,9 +25,9 @@ func ExampleIngs_Unify_yes() {
 	b := New()
 
 	five := NewInt(5)
-	x := NewVariable("x")
-	y := NewVariable("y")
-	z := NewVariable("z")
+	x := b.Fresh("x")
+	y := b.Fresh("y")
+	z := b.Fresh("z")
 
 	b.Bind(x, five)
 	b.Bind(y, five)
@@ -32,26 +36,13 @@ func ExampleIngs_Unify_yes() {
 
 	b.Bind(z, y)
 
-	// ((,x . 5)(,y . 5)(,z . ,y))
-
-	fmt.Println(b.Unify(x, z))
-
-	b.Delete(y)
-
-	fmt.Println(b.Unify(x, z))
-	yX, ok := b.Load(y)
-	fmt.Println("y came back:", yX, ok)
-
-	b.Delete(y)
-	b.Delete(x)
 	fmt.Println(b)
+	fmt.Println(b.Unify(x, z))
 
 	// Output:
 	// true
+	// ((,x . 5)(,y . 5)(,z . ,y))
 	// true
-	// true
-	// y came back: 5 true
-	// ((,z . ,y))
 }
 
 func ExampleIngs_Unify_false() {
@@ -59,19 +50,16 @@ func ExampleIngs_Unify_false() {
 
 	four := NewInt(4)
 	five := NewInt(5)
-	x := NewVariable("x")
-	y := NewVariable("y")
+	x := b.Fresh("x")
+	y := b.Fresh("y")
 
 	b.Bind(x, four)
 	b.Bind(y, five)
 
-	// ((,x . 4)(,y . 5))
+	fmt.Println(b)
 	fmt.Println(b.Unify(x, y))
 
-	b.Delete(y)
-	fmt.Println(b)
-
 	// Output:
+	// ((,x . 4)(,y . 5))
 	// false
-	// ((,x . 4))
 }

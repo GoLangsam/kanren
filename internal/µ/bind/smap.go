@@ -1,16 +1,16 @@
-package smap
+package bind
 
-// SMap represents the mapping of logic Variables to symbolic eXpressions/terms
-// and intentionally mimics and extends the interface of a sync.Map.
-type SMap map[V]X
+// sMap represents a type-safe drop-in replacement for sync.Map.
+type sMap map[key]value
 
-func New() SMap {
-	return make(map[V]X)
+// newMap returns a new sMap
+func newMap() sMap {
+	return make(map[key]value)
 }
 
 // Clone returns a shallow copy.
-func (m SMap) Clone() SMap {
-	clone := New()
+func (m sMap) Clone() sMap {
+	clone := newMap()
 	for key, value := range m {
 		clone[key] = value // Store(key, value)
 	}
@@ -18,18 +18,13 @@ func (m SMap) Clone() SMap {
 }
 
 // Store sets the value for a key.
-func (m SMap) Store(key V, value X) {
+func (m sMap) Store(key key, value value) {
 	m[key] = value
-}
-
-// Delete deletes the value for a key.
-func (m SMap) Delete(key V) {
-	delete(m, key)
 }
 
 // Load returns the value stored in the map for a key, or nil if no value is
 // present. The ok result indicates whether value was found in the map.
-func (m SMap) Load(key V) (value X, ok bool) {
+func (m sMap) Load(key key) (value value, ok bool) {
 	value, ok = m[key]
 	return
 }
@@ -37,13 +32,18 @@ func (m SMap) Load(key V) (value X, ok bool) {
 // LoadOrStore returns the existing value for the key if present.
 // Otherwise, it stores and returns the given value.
 // The loaded result is true if the value was loaded, false if stored.
-func (m SMap) LoadOrStore(key V, value X) (actual X, loaded bool) {
+func (m sMap) LoadOrStore(key key, value value) (actual value, loaded bool) {
 	actual, loaded = m[key] // m.Load(key)
 	if !loaded {
 		m[key] = value // m.Store(key, value)
 		actual = value
 	}
 	return
+}
+
+// Delete deletes the value for a key.
+func (m sMap) Delete(key key) {
+	delete(m, key)
 }
 
 // =============================================================================

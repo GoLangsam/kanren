@@ -58,3 +58,10 @@ func Car(list, head X) Goal {
 		return Equal(cons(head, tail), list)
 	})
 }
+
+// Cdr is the relation: Cdr(list) == tail.
+func Cdr(list, tail X) Goal {
+	return CallFresh(func(head X) Goal {
+		return Equal(cons(head, tail), list)
+	})
+}

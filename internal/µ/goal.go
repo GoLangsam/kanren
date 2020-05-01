@@ -7,15 +7,17 @@ func (g Goal) Try() StreamOfStates {
 	return g(NewS())
 }
 
+// =============================================================================
+
 // Failure is a goal that always returns an empty stream of states.
-func Failure() Goal {
-	return func(s S) StreamOfStates {
-		return Zero()
+func Failure(...Goal) Goal {
+	return func(S) StreamOfStates {
+		return ZERO
 	}
 }
 
 // Success is a goal that always returns the input state in the resulting stream of states.
-func Success() Goal {
+func Success(...Goal) Goal {
 	return func(s S) StreamOfStates {
 		return Unit(s)
 	}
@@ -38,7 +40,7 @@ func (g Goal) Or(h Goal) Goal {
 // And is a goal that returns a logical AND of the goals.
 func (g Goal) And(h Goal) Goal {
 	return func(s S) StreamOfStates {
-		return g(s).Bind(goal(h))
+		return g(s).Bind(h) // goal(h))
 	}
 }
 
@@ -56,7 +58,7 @@ func (g Goal) Once() Goal {
 		if ok {
 			return Unit(head)
 		} else {
-			return Zero()
+			return ZERO
 		}
 	}
 }
@@ -71,10 +73,10 @@ func (g Goal) IfThenElse(THEN, ELSE Goal) Goal {
 	return func(s S) StreamOfStates {
 		sc := s.Clone()
 		IFs := g(sc)
-		head, ok := IFs.Head()
+		_, ok := IFs.Receive()
 		IFs.Drop()
 
-		if ok && head != nil {
+		if ok {
 			return THEN(s) // then
 		} else {
 			return ELSE(s) // else
@@ -87,15 +89,6 @@ func (g Goal) IfThenElse(THEN, ELSE Goal) Goal {
 func (g Goal) EitherOr(that Goal) Goal {
 	return g.IfThenElse(g, that)
 
-}
-
-// =============================================================================
-
-// ForEver is a goal that keeps returning g forever.
-func (g Goal) ForEver() Goal {
-	return func(s S) StreamOfStates {
-		return g.Or(g.ForEver())(s)
-	}
 }
 
 // =============================================================================
