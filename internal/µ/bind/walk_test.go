@@ -41,7 +41,7 @@ func TestResolve(t *testing.T) {
 	}
 	for _, test := range tests {
 		q, subs, want := test.u, test.s, test.want
-		t.Run("(walk "+q+" "+subs.String()+")", func(t *testing.T) {
+		t.Run("(resolve "+q+" "+subs.String()+")", func(t *testing.T) {
 			v := subs.Fresh(q)
 			got := subs.Resolve(v).String()
 			if want != got {

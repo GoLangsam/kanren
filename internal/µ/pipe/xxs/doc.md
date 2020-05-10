@@ -2,8 +2,10 @@
 				
 -------------------------------------------------------------------------------
 ## go doc .  StreamOfStates	
+package pipe // import "github.com/GoLangsam/kanren/internal/µ/pipe/xxs"
+
 type StreamOfStates struct {
-	Aborter
+	abort.Aborter
 	// Has unexported fields.
 }
     StreamOfStates is a supply channel
@@ -29,6 +31,7 @@ func (into StreamOfStates) Send(val S) (sent bool)
 				
 -------------------------------------------------------------------------------
 ## go doc -all		
+
 package pipe // import "github.com/GoLangsam/kanren/internal/µ/pipe/xxs"
 
 
@@ -38,53 +41,12 @@ var (
 	NewS = bind.New
 )
 
-FUNCTIONS
-
-func WithCancel() (Aborter, CancelFunc)
-    WithCancel returns a new aborter and its cancel function.
-
-
 TYPES
-
-type Aborter <-chan struct{}
-    Aborter provides a simple mechanism to broadcast a request to cancel some
-    ongoing work.
-
-    Aborter is intended to be embedded in some struct, and to be initialised
-    from some "context.Done()" or via WithCancel().
-
-func (sig Aborter) Done() (done <-chan struct{})
-    Done returns a channel that's closed when work done on behalf of this
-    context should be canceled. Done may return nil if this context can never be
-    canceled. Successive calls to Done return the same value.
-
-    Done is provided for use in select statements, and is intentionally similar
-    to "context.Done()".
-
-    See https://blog.golang.org/pipelines or https://github.com/GoLangsam/pipe
-    for more examples of how to use a Done channel for cancelation.
-
-func (sig Aborter) Ever() (noNeedToStop bool)
-    Ever reports whether to continue, or not.
-
-    Ever is intended for for-loops:
-
-    `for foo.Ever() { ... }`
-
-    (pun intended)
-
-    Note: Due to the non-deterministic nature of the underlying mechanisms,
-    sometimes false positives may be returned.
-
-type CancelFunc func()
-    A CancelFunc tells an operation to abandon its work. A CancelFunc does not
-    wait for the work to stop. After the first call, subsequent calls to a
-    CancelFunc do nothing.
 
 type S = bind.Ings
 
 type StreamOfStates struct {
-	Aborter
+	abort.Aborter
 	// Has unexported fields.
 }
     StreamOfStates is a supply channel
@@ -120,8 +82,8 @@ func (from StreamOfStates) From() (req chan<- struct{}, rcv <-chan S)
     From returns the handshaking channels (for use e.g. in `select` statements)
     to receive values:
 
-    `req` to send a request `req <- struct{}{}` and
-    `rcv` to reveive such requested value from.
+        `req` to send a request `req <- struct{}{}` and
+        `rcv` to reveive such requested value from.
 
 func (from StreamOfStates) Get() (val S, open bool)
     Get is the comma-ok multi-valued form to receive from the channel and
@@ -137,8 +99,8 @@ func (into StreamOfStates) Into() (req <-chan struct{}, snd chan<- S)
     Into returns the handshaking channels (for use e.g. in `select` statements)
     to send values:
 
-    `req` to receive a request `<-req` and
-    `snd` to send such requested value into.
+        `req` to receive a request `<-req` and
+        `snd` to send such requested value into.
 
 func (c StreamOfStates) Len() int
     Len reports the length of the underlying value channel.
@@ -179,7 +141,7 @@ func (into StreamOfStates) Put(val S) (ok bool)
 
     Put is a convenience for
 
-    if Next() { Send(v) } else { Close() }
+        if Next() { Send(v) } else { Close() }
 
     Put includes housekeeping: If `into` has been dropped, `into` is closed.
 

@@ -69,7 +69,7 @@ func TestNoReify(t *testing.T) {
 	ss := make([]*sexpr.Expression, len(states))
 	strs := make([]string, len(states))
 
-	x, _ := sexpr.NewVariable("x").AsVariable()
+	x := sexpr.NewVariable("x")
 	r := reifyVarFromState(x)
 	for i, s := range states {
 		ss[i] = r(s)

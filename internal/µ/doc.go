@@ -29,6 +29,7 @@ var (
 	NewS = pipe.NewS
 	Unit = pipe.Unit
 	ZERO = pipe.ZERO
+	η    = pipe.Unit
 )
 
 /*

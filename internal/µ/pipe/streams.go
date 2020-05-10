@@ -14,10 +14,9 @@ func (s StreamOfStates) Head() (a S, ok bool) {
 
 func Unit(a S) StreamOfStates {
 	// TODO: done := a.Done()
-	done := make(chan struct{})
-	cha := New(done)
+	cha := New(make(chan struct{}))
 	go func() {
-		_ = cha.Provide(a)
+		cha.Provide(a)
 		cha.Close()
 	}()
 	return cha

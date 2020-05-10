@@ -74,7 +74,7 @@ func (bind Ings) String() string {
 // Note: Bind does not attempt to avoid circular bindings.
 // Use Occurs to check beforehand.
 func (bind Ings) Bind(v V, x X) {
-	if v.IsVariable() && x != nil {
+	if v.IsVariable() {
 		bind.sMap.Store(v.Atom.Var.Name, x)
 	}
 	return
@@ -109,8 +109,8 @@ func (bind Ings) resolve(v V) X {
 // =============================================================================
 
 // Walk ... some call it `walkstar` or `walk*`
-func (bind Ings) Walk(v V) X {
-	x := bind.Resolve(v)
+func (bind Ings) Walk(x X) X {
+	x = bind.Resolve(x)
 	if !x.IsPair() {
 		return x
 	}
@@ -162,11 +162,14 @@ func (bind Ings) Unify(x, y X) bool {
 	x = bind.Resolve(x)
 	y = bind.Resolve(y)
 
-	if x.IsVariable() && y.IsVariable() && x.Atom.Var.Name == y.Atom.Var.Name {
-		return true
-	}
-
 	switch {
+	case x.IsVariable() && y.IsVariable() && x.Atom.Var.Name == y.Atom.Var.Name:
+		return true
+
+	case x.IsVariable() && y.IsVariable():
+		bind.Bind(x, y)
+		return true
+
 	case x.IsVariable():
 		return bind.SafeBind(x, y)
 
@@ -189,21 +192,21 @@ func (bind Ings) Unify(x, y X) bool {
 // Reify ...
 func (bind Ings) Reify(v V) X {
 	x := bind.Walk(v)
-	r := New().reify(x)
-	return r.Walk(x)
+	b := New()
+	b.reify(x)
+	return b.Walk(x)
 }
 
-func (bind Ings) reify(v X) Ings {
-	x := bind.Resolve(v)
+func (bind Ings) reify(x X) {
+	x = bind.Resolve(x)
 
 	switch {
 	case x.IsVariable() && !isReifiedName(x.Atom.Var.Name):
 		bind.Bind(x, bind.V()) // bind x to new fresh var
 	case x.IsPair():
-		bind = bind.reify(x.Pair.Car)
-		bind = bind.reify(x.Pair.Cdr)
+		bind.reify(x.Pair.Car)
+		bind.reify(x.Pair.Cdr)
 	}
-	return bind
 }
 
 // =============================================================================

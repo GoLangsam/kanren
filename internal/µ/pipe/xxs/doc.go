@@ -11,9 +11,12 @@ var (
 
 var _ = sexpr.NewVariable("q")
 
+// aS documents what we need from S
 type aS interface {
 	String() string
 	Unify(x, y bind.X) bool
-	V() bind.X
+	// V() bind.X
 	Walk(v bind.V) bind.X
 }
+
+var _ aS = NewS() // bind.Ings V is a field, not a method

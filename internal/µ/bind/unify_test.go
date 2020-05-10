@@ -8,7 +8,6 @@ func ExampleIngs_Bind() {
 	four := NewInt(4)
 	five := NewInt(5)
 	x := b.Fresh("x")
-	// vx, _ := x.AsVariable()
 
 	b.Bind(x, four)
 	fmt.Println(b)
