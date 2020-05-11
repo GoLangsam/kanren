@@ -24,5 +24,7 @@ var (
 	NewS                = µ.NewS // only used in test programs
 	Unit                = µ.Unit
 	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
-	cons                = sexpr.Cons
+
+	cons    = sexpr.Cons
+	NewList = sexpr.NewList
 )

@@ -8,7 +8,5 @@ func Conjunction(gs ...Goal) Goal {
 	if len(gs) == 1 {
 		return gs[0]
 	}
-	g := gs[0]
-	h := Conjunction(gs[1:]...)
-	return g.And(h)
+	return gs[0].And(Conjunction(gs[1:]...))
 }

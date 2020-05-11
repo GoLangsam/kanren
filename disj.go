@@ -8,7 +8,5 @@ func Disjoint(gs ...Goal) Goal {
 	if len(gs) == 1 {
 		return gs[0]
 	}
-	g := gs[0]
-	h := Disjoint(gs[1:]...)
-	return g.Or(h)
+	return gs[0].Or(Disjoint(gs[1:]...))
 }

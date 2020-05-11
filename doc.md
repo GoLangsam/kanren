@@ -2,6 +2,8 @@
 				
 -------------------------------------------------------------------------------
 ## go doc .  Goal		
+package kanren // import "."
+
 var (
 	FAIL Goal = µ.Failure() // FAIL represents Failure.
 	GOAL Goal = µ.Success() // GOAL represents Success.
@@ -10,11 +12,15 @@ var (
 	Unit                = µ.Unit
 	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
 
+	NewList = sexpr.NewList
 )
 type Goal = µ.Goal // func(S) StreamOfStates
 
+func AnyOf(v V, x X) Goal
 func Append(aHead, aTail, aList X) Goal
 func AppendAWS(l, t, out X) Goal
+func AtAnyPositionOf(v V, n int, q V) Goal
+func Call(constructor interface{}, args ...interface{}) Goal
 func CallFresh(f func(V) Goal) Goal
 func Car(list, head X) Goal
 func Cdr(list, tail X) Goal
@@ -34,6 +40,7 @@ func Fresh8(f func(V, V, V, V, V, V, V, V) Goal) Goal
 func IfThenElse(IF, THEN, ELSE Goal) Goal
 func Null(x X) Goal
 func Once(g Goal) Goal
+func OneOf(v V, symbols ...X) Goal
 				
 -------------------------------------------------------------------------------
 ## go doc -all		
@@ -51,17 +58,29 @@ var (
 	Unit                = µ.Unit
 	ZERO StreamOfStates = µ.ZERO // used by Equal-relation
 
+	NewList = sexpr.NewList
 )
 
 TYPES
 
 type Goal = µ.Goal // func(S) StreamOfStates
 
+func AnyOf(v V, x X) Goal
+    AnyOf is a goal that returns v to be equal to any one of the atoms the given
+    expression is composed of.
+
 func Append(aHead, aTail, aList X) Goal
     Append is the relation: append(aHead, aTail) == aList.
 
 func AppendAWS(l, t, out X) Goal
     AppendAWS is the relation: append(l, t) == out.
+
+func AtAnyPositionOf(v V, n int, q V) Goal
+    AtAnyPostitionOf is a goal that returns v to be at any position of an
+    n-Tuple of variables.
+
+func Call(constructor interface{}, args ...interface{}) Goal
+    Call helps to construct recursive goals
 
 func CallFresh(f func(V) Goal) Goal
     CallFresh expects a function f that returns a Goal given an eXpression.
@@ -95,16 +114,24 @@ func EitherOr(THIS, THAT Goal) Goal
 func Equal(x, y X) Goal
     Equal is a relation: it reports whether x unifies with y.
 
-    Note: In Scheme, Equal is often spelled "==".
+    Note: In Scheme, Equal is often spelled "≡" (U+2261) or "==".
 
 func Fresh1(f func(V) Goal) Goal
+
 func Fresh2(f func(V, V) Goal) Goal
+
 func Fresh3(f func(V, V, V) Goal) Goal
+
 func Fresh4(f func(V, V, V, V) Goal) Goal
+
 func Fresh5(f func(V, V, V, V, V) Goal) Goal
+
 func Fresh6(f func(V, V, V, V, V, V) Goal) Goal
+
 func Fresh7(f func(V, V, V, V, V, V, V) Goal) Goal
+
 func Fresh8(f func(V, V, V, V, V, V, V, V) Goal) Goal
+
 func IfThenElse(IF, THEN, ELSE Goal) Goal
     IfThenElse is a goal that upon evaluation probes the IF goal and, using a
     clone of the state, evaluates the THEN goal, if IF evaluates successful and
@@ -116,6 +143,9 @@ func Null(x X) Goal
 func Once(g Goal) Goal
     Once is a goal that returns the first success of g, if any, and discards
     further results, if any.
+
+func OneOf(v V, symbols ...X) Goal
+    OneOf is a goal that returns v to be equal to one of the given symbols.
 
 type S = µ.S
 
