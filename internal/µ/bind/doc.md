@@ -68,7 +68,7 @@ func (bind Ings) SafeBind(v V, x X) bool
 func (bind Ings) String() string
 func (bind Ings) Unify(x, y X) bool
 func (bind Ings) Walk(x X) X
-func (bind Ings) reify(x X)
+func (bind Ings) reify(x X, root Ings)
 func (bind Ings) resolve(v V) X
 
 -------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ func (bind Ings) Occurs(v V, x X) bool
     Occurs reports whether v occurs in x.
 
 func (bind Ings) Reify(v V) X
-    Reify ...
+    Reify ... Reify is a kind of foldl -
 
 func (bind Ings) Resolve(x X) X
     Resolve the eXpression by chasing along the bindings recurring down to the

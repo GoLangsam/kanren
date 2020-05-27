@@ -190,22 +190,26 @@ func (bind Ings) Unify(x, y X) bool {
 // =============================================================================
 
 // Reify ...
+// Reify is a kind of foldl -
 func (bind Ings) Reify(v V) X {
 	x := bind.Walk(v)
-	b := New()
-	b.reify(x)
-	return b.Walk(x)
+	free := New() // free vars accumulate here as substituted by new reified vars
+	free.reify(x, bind)
+	return free.Walk(x)
 }
 
-func (bind Ings) reify(x X) {
-	x = bind.Resolve(x)
+// we resolve in root and accumulate in bind
+func (bind Ings) reify(x X, root Ings) {
+	x = root.Resolve(x)
 
 	switch {
-	case x.IsVariable() && !isReifiedName(x.Atom.Var.Name):
-		bind.Bind(x, bind.V()) // bind x to new fresh var
+	case x.IsVariable(): // && !isReifiedName(x.Atom.Var.Name):
+		if _, isBound := bind.sMap.Load(x.Atom.Var.Name); !isBound {
+			bind.Bind(x, bind.V()) // bind x to new fresh var
+		}
 	case x.IsPair():
-		bind.reify(x.Pair.Car)
-		bind.reify(x.Pair.Cdr)
+		bind.reify(x.Pair.Car, root)
+		bind.reify(x.Pair.Cdr, root)
 	}
 }
 
