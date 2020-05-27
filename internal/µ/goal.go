@@ -73,6 +73,8 @@ func (g Goal) IfThenElse(THEN, ELSE Goal) Goal {
 	return func(s S) StreamOfStates {
 		sc := s.Clone()
 		IFs := g(sc)
+
+		// TODO: this is a Peek - consider to implement in xss
 		_, ok := IFs.Receive()
 		IFs.Drop()
 

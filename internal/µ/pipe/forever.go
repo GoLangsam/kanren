@@ -10,11 +10,10 @@ func ForEver(s S, goal func(S) StreamOfStates) StreamOfStates {
 		for {
 			sc := s.Clone()
 			ss := goal(sc)
-			for state, ok := ss.Receive(); ok; state, ok = ss.Receive() {
-				//r state := range ss {
+			//r state := range ss {
+			for state, ok := ss.Head(); ok; state, ok = ss.Head() {
 				cha.Provide(state)
 			}
-			ss.Drop()
 		}
 	}()
 	return cha

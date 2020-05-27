@@ -2,15 +2,13 @@ package pipe
 
 func (s StreamOfStates) bind(out StreamOfStates, goal func(S) StreamOfStates) {
 
-	//r head, ok := s.Head(); ok; head, ok = s.Head() {
+	//r head := range s {
 	for head, ok := s.Head(); ok; head, ok = s.Head() {
 		s := goal(head)
 		for head, ok := s.Head(); ok; head, ok = s.Head() {
 			out.Provide(head)
 		}
-		s.Drop()
 	}
-	s.Drop()
 	out.Close()
 }
 

@@ -16,7 +16,8 @@ type X = *sexpr.Expression
 func (ss StreamOfStates) Reify(v V) chan X {
 	cha := make(chan X)
 	go func() {
-		for s, ok := ss.Receive(); ok; s, ok = ss.Receive() {
+		//r s := range ss {
+		for s, ok := ss.Head(); ok; s, ok = ss.Head() {
 			// println(v.String(), "=?", s.String())
 			r := s.Reify(v)
 			// println(v.String(), "=>", r.String())
